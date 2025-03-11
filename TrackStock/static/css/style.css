@@ -97,7 +97,7 @@ body {
     }
 }
 .container{
-    margin-left: 180px;
+    margin-left: 100px;
     padding: 10px;
     width: 100%;
     margin-top: 30px;
@@ -151,4 +151,60 @@ footer {
     align-items: center;
     justify-content: center;
     color: #6c757d;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.pagination-container {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    padding: 10px 0;
+    z-index: 1000;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.pagination .page-link {
+    border-radius: 8px;
+    margin: 0 5px;
+    color: #007bff;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.pagination .page-link:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.pagination .active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+.custom-category-select {
+  font-weight: bold;
+}
+
+.low-stock-option {
+  font-weight: bold;
+  color: #856404; /* Dark Yellow */
+  background-color: #fff3cd; /* Light Yellow */
+}
+
+.custom-category-select option:checked.low-stock-option {
+  background-color: #ffc107; /* Strong Yellow */
+  color: black;
+}
+
+.zero-stock-option {
+  font-weight: bold;
+  color: #721c24; /* Dark Red */
+  background-color: #f8d7da; /* Light Red */
+}
+
+.custom-category-select option:checked.zero-stock-option {
+  background-color: #dc3545; /* Strong Red */
+  color: white;
 }
