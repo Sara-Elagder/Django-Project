@@ -1,84 +1,64 @@
-{% extends 'base.html' %}
-{% block extra_css %}
-<style>
-  .card-img-container {
-      height: 200px;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #f8f9fa;
-  }
+{% extends "base.html" %}
+{%block header %}
+<title>Inventory</title>
+{% endblock header %}
 
-  .card-img-top {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-  }
+{%load static %}
+{% block main_content %}
 
-  .no-image-placeholder {
-      height: 100%;
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #6c757d;
-  }
-</style>
-{% endblock %}
-
-{% block content %}
+   
 <div class="container mt-4">
-  <h2>Inventory Products</h2>
-
-  <div class="mb-3">
-    <form method="GET" action="">
-      <select name="category" class="form-select" onchange="this.form.submit()">
-        <option value="">All Categories</option>
-        {% for category in categories %}
-        <option value="{{ category.id }}" {% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>
-          {{ category.name }}
-        </option>
-        {% endfor %}
-      </select>
-    </form>
-    
-  </div>
-
-  <div class="row mt-4">
-    {% for product in products %}
-    <div class="col-md-4 mb-4">
-      <div class="card {% if product.is_critical %}border-danger{% endif %}">
-        <div class="card-img-container">
-          {% if product.image %}
-          <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
-          {% else %}
-          <div class="no-image-placeholder">No Image</div>
-          {% endif %}
-        </div>
-
-        <div class="card-body">
-          <h5 class="card-title">{{ product.name }}</h5>
-          <p class="card-text">
-            <strong>Category:</strong> {{ product.category|default:"Not specified" }}<br>
-            <strong>Quantity:</strong> {{ product.quantity }}
-            {% if product.is_critical %}
-            <span class="badge bg-danger ms-2">Low Stock</span>
+    <h2>Inventory Products</h2>
+  
+    <div class="mb-3">
+      <form method="GET" action="">
+        <select name="category" class="form-select" onchange="this.form.submit()">
+          <option value="">All Categories</option>
+          {% for category in categories %}
+          <option value="{{ category.id }}" {% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>
+            {{ category.name }}
+          </option>
+          {% endfor %}
+        </select>
+      </form>
+      
+    </div>
+  
+    <div class="row mt-4">
+      {% for product in products %}
+      <div class="col-md-4 mb-4">
+        <div class="card {% if product.is_critical %}border-danger{% endif %}">
+          <div class="card-img-container">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+            {% else %}
+            <div class="no-image-placeholder">No Image</div>
             {% endif %}
-          </p>
-          <p class="card-text">
-            <small class="text-muted">Added on {{ product.created_at|date:"F d, Y" }}</small>
-          </p>
+          </div>
+  
+          <div class="card-body">
+            <h5 class="card-title">{{ product.name }}</h5>
+            <p class="card-text">
+              <strong>Category:</strong> {{ product.category|default:"Not specified" }}<br>
+              <strong>Quantity:</strong> {{ product.quantity }}
+              {% if product.is_critical %}
+              <span class="badge bg-danger ms-2">Low Stock</span>
+              {% endif %}
+            </p>
+            <p class="card-text">
+              <small class="text-muted">Added on {{ product.created_at|date:"F d, Y" }}</small>
+            </p>
+          </div>
         </div>
       </div>
-    </div>
-    {% empty %}
-    <div class="col-12">
-      <div class="alert alert-info">
-        No products are available. Add products from the admin dashboard.
+      {% empty %}
+      <div class="col-12">
+        <div class="alert alert-info">
+          No products are available. Add products from the admin dashboard.
+        </div>
       </div>
+      {% endfor %}
     </div>
-    {% endfor %}
   </div>
-</div>
-{% endblock %}
+  
+{% endblock main_content  %}
