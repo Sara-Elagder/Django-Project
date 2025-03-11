@@ -35,11 +35,13 @@
     {% for product in products %}
     <div class="col-md-4 mb-4">
       <div class="card {% if product.is_critical %}border-danger{% endif %}">
-        {% if product.image %}
-        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
-        {% else %}
-        <div class="card-img-top bg-light text-center p-5">No Image</div>
-        {% endif %}
+        <div class="card-img-container">
+          {% if product.image %}
+          <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+          {% else %}
+          <div class="no-image-placeholder">No Image</div>
+          {% endif %}
+        </div>
 
         <div class="card-body">
           <h5 class="card-title">{{ product.name }}</h5>
