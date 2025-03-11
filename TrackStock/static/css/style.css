@@ -60,7 +60,7 @@ body {
 .sidebar {
     width: 200px;
     height: calc(100vh - 56px); 
-    background: var(--color-dark);;
+    background: linear-gradient(to bottom right, #4f72b8, #42474d);;
     color: white;
     position: fixed;
     top: 56px; 
@@ -83,7 +83,7 @@ body {
     text-align: center;
 }
 .sidebar a:hover {
-    background: #495057;
+    background:var(--color-medium);
 }
 @media (max-width: 768px) {
     .navbar {
@@ -96,20 +96,20 @@ body {
         display: none;
     }
 }
-.content {
-    margin-left: 260px;
-    padding: 20px;
+.container{
+    margin-left: 180px;
+    padding: 10px;
     width: 100%;
-    margin-top: 56px;
+    margin-top: 30px;
     transition: all 0.3s;
 }
 @media (max-width: 768px) {
-    .content {
-         margin-left: 80px;
+    .container{
+         margin-left: 50px;
     }
 
-    .content {
-        margin-left: 80px;
+    .container{
+        margin-left: 50px;
         width: calc(100% - 80px);
     }
     .sidebar.menu-open {
@@ -129,8 +129,6 @@ footer {
     bottom: 0;
     width:100%;
 }
-  
-/* styling for product list */
 .card-img-container {
     height: 200px;
     overflow: hidden;
