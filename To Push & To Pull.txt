@@ -1,0 +1,19 @@
+# To push
+git add .
+git commit -m " Enter your commit here "
+git push origin main
+
+
+
+
+
+To pull 
+# switch to branch_name you want to pull from it 
+git checkout branch_name
+#Save your local changes (stash them temporarily):
+git stash
+# pull from branch you want
+git pull origin branch_name
+#Reapply your saved changes:
+git stash pop
+

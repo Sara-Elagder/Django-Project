@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{%load static %}
+{%block header %}
+    <title>Add Product</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .form-row {
+            margin-bottom: 15px;
+        }
+        .form-row label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-row input, .form-row select, .form-row textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .submit-row {
+            margin-top: 20px;
+        }
+        .submit-row input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .submit-row input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+{% endblock header %}
+{% block main_content %}
+<div class="form-container">
+    <h1>Add Product</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-row">
+            {{ form.as_p }}
+        </div>
+        <div class="submit-row">
+            <input type="submit" value="Save" name="_save" class="default" />
+            <input type="submit" value="Save and add another" name="_addanother" />
+        </div>
+    </form>
+</div>
+{% endblock main_content  %}
