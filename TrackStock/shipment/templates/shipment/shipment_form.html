@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block header %}
+<title>Create Shipment</title>
+<style>
+    .container {
+        height:600px !important;
+        min-height:600px !important;
+    }
+    .card.height{
+      height:40vh ; 
+    }
+    .shipment-btn {
+        background-color: #4f72b8 !important;
+        color: white !important;
+    }
+    input, select, textarea {
+        font-size: 1.1rem !important;
+        padding: 12px !important;
+        border-radius: 8px !important;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #007bff !important;
+        box-shadow: 0 0 10px rgba(0, 123, 255, 0.2) !important;
+    }
+    .card {
+        animation: fadeIn 0.5s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+{% endblock header %}
+{% block main_content %}
+<div class="container d-flex justify-content-center align-items-center">
+    <div class="card height shadow-lg rounded-4 border-0 p-4" style="max-width: 600px; width: 100%;">
+        <div class="card-header bg-primary text-white text-center py-4 rounded-top-4">
+            <h2 class="mb-0 fw-bold"><i class="bi bi-box-seam"></i> Create Shipment</h2>
+        </div>
+        <div class="card-body">
+            <form method="post" class="needs-validation" novalidate>
+                {% csrf_token %}
+                
+                {% for field in form %}
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">{{ field.label }}</label>
+                    <div class="input-group">
+                        {% if field.field.widget.input_type == "text" or field.field.widget.input_type == "number" %}
+                            <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" class="form-control border-secondary shadow-sm" placeholder="Enter {{ field.label }}" required>
+                        {% elif field.field.widget.input_type == "select" %}
+                            <select name="{{ field.name }}" class="form-select border-secondary shadow-sm">
+                                {{ field }}
+                            </select>
+                        {% else %}
+                            {{ field }}
+                        {% endif %}
+                    </div>
+                    {% if field.help_text %}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <div class="text-danger mt-1">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn shipment-btn btn-lg fw-semibold shadow-sm">
+                        <i class="bi bi-check-circle"></i> Save Shipment
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+    
+    
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+{% endblock %}
