@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load static %}
+{% block header %}
+
+<style>
+    .btn.btn-add {
+        background-color: #4f72b8 !important;
+        color: white !important;
+    }
+</style>
+{% endblock header %}
+
+{% block main_content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">Add Product to Shipment</h2>
+        <a href="{% url 'shipment:shipment_detail' shipment.id %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Shipment
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            <h4 class="mb-3 text-dark fw-semibold">Shipment: {{ shipment.factory_name }}</h4>
+            <p><strong>Date Received:</strong> {{ shipment.date_received|date:"d M Y, H:i A" }}</p>
+            <p>
+                <strong>Status:</strong> 
+                {% if shipment.status == 'Pending' %}
+                    <span class="badge bg-warning text-dark">Pending</span>
+                {% else %}
+                    <span class="badge bg-success">Received</span>
+                {% endif %}
+            </p>
+
+            <h5 class="mt-4">Add Product</h5>
+            <form method="post" class="mt-3">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="category" class="form-label fw-semibold">Select Category</label>
+                    <select id="category" class="form-select" onchange="filterProducts()" required>
+                        <option value="" selected>Select a Category</option> 
+                        {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                
+
+                <div class="mb-3">
+                    <label for="product" class="form-label fw-semibold">Select Product</label>
+                    <select name="product" id="product" class="form-select" required>
+                        <option value="" selected disabled>Select a Product</option>
+                        {% for product in products %}
+                        <option value="{{ product.id }}" data-category="{{ product.category.id }}">{{ product.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="quantity" class="form-label fw-semibold">Quantity</label>
+                    <input type="number" name="quantity" id="quantity" class="form-control" min="1" required>
+                </div>
+
+                <button type="submit" class="btn btn-add">
+                    <i class="bi bi-plus-circle"></i> Add Product
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function filterProducts() {
+        let categoryFilter = document.getElementById("category").value;
+        let productDropdown = document.getElementById("product");
+
+        for (let option of productDropdown.options) {
+            if (!categoryFilter || option.getAttribute("data-category") === categoryFilter) {
+                option.style.display = "block";
+            } else {
+                option.style.display = "none";
+            }
+        }
+        productDropdown.selectedIndex = 0; 
+    }
+</script>
+{% endblock %}

@@ -17,8 +17,10 @@
         </form>
  <div class="dropdown">
   <button class="btn  dropdown-toggle d-flex align-items-center text-light"   type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-    <img src="Sample_User_Icon.png" alt="user_picture" width="30" height="30" class="rounded-circle me-2">
+    {% comment %} <img src="Sample_User_Icon.png" alt="user_picture" width="30" height="30" class="rounded-circle me-2"> {% endcomment %}
+    <img src="{% static 'images/Sample_User_Icon.png' %}" alt="user_picture" width="30" height="30" class="rounded-circle me-2">
     <span style="color: white; padding: 5px;" >nouran</span>
+
   </button>
   <ul class="dropdown-menu dropdown-menu-end w-25" aria-labelledby="userDropdown">
     <li >
