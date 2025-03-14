@@ -7,13 +7,15 @@ def product_list(request):
     category_name = request.GET.get('category')
     category_selected = "All Products"
 
-    if category_name == "low_stock":
+
+    if category_name == "zero_stock":
         products = Product.objects.all()
-        products = [product for product in products if product.is_critical()]
-        category_selected = "Low Stock"
-    elif category_name == "zero_stock":
-        products = Product.objects.filter(quantity=0)
+        products = [product for product in products if product.get_stock_status() == "out_of_stock"]
         category_selected = "Out of Stock"
+    elif category_name == "low_stock":
+        products = Product.objects.all()
+        products = [product for product in products if product.get_stock_status() == "low_stock"]
+        category_selected = "Low Stock"
     elif category_name:
         category_selected = get_object_or_404(Category, id=category_name)
         products = Product.objects.filter(category=category_name)

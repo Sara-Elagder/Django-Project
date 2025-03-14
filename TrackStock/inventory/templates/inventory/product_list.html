@@ -125,7 +125,10 @@
     <h2 class="col-md-12 text-center mb-3"> {{ category_selected }}  </h2>
     {% for product in products %}
     <div class="col-md-4 mb-4">
-      <div class="card {% if product.quantity == 0 %}border-danger{% elif product.is_critical %}border-warning{% endif %}">
+    <div class="card
+        {% if product.get_stock_status == "out_of_stock" %}border-danger
+        {% elif product.get_stock_status == "low_stock" %}border-warning
+        {% endif %}">
         <div class="card-img-container">
           {% if product.image %}
           <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
@@ -139,9 +142,9 @@
           <p class="card-text">
             <strong>Category:</strong> {{ product.category|default:"Not specified" }}<br>
             <strong>Quantity:</strong> {{ product.quantity }}
-            {% if product.quantity == 0 %}
+            {% if product.get_stock_status == "out_of_stock" %}
             <span class="badge bg-danger ms-2">Out of Stock</span>
-            {% elif product.is_critical %}
+            {% elif product.get_stock_status == "low_stock" %}
             <span class="badge bg-warning ms-2">Low Stock</span>
             {% endif %}
           </p>
