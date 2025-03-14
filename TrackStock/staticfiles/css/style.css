@@ -3,6 +3,7 @@
     --color-lighter: rgb(168, 216, 219); 
     --color-medium: rgb(122, 178, 211);  
     --color-dark: rgb(44, 69, 112);
+   
 }
 *{
     margin: 0;
@@ -17,6 +18,8 @@ body {
     background-color: var(--color-dark);
     width:100%;
     z-index: 1030;
+    position: sticky;
+    top: 0;
 }
   
 .navbar-brand {
@@ -82,6 +85,10 @@ body {
     width: 40px;
     text-align: center;
 }
+.sidebar.menu-open {
+    top: 70px; /* Adjust this value to align the sidebar with the header */
+}
+
 .sidebar a:hover {
     background:var(--color-medium);
 }

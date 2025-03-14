@@ -1,36 +1,36 @@
 {% load static %}
-<nav class="navbar navbar-expand-lg ">
-    <div class="container-fluid  align-item-center">
-      <a class="navbar-brand w-75  text-light " href="#"> 
-        <h4>Wkalet El amir</h4>
-
-      </a> <!--inventory -->
+<nav class="navbar navbar-expand-lg">
+  <div class="container-fluid align-item-center">
+      <a class="navbar-brand w-75 text-light" href="#">
+          <h4>Wkalet El amir</h4>
+      </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon" ></span>
+          <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
-        <form class="d-flex" style="padding-right: 100px; padding-bottom: 10px;  padding-top:10px ; width:500px;" >
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn" id="search-button"  type="submit">Search</button>
-        </form>
- <div class="dropdown">
-  <button class="btn  dropdown-toggle d-flex align-items-center text-light"   type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-    {% comment %} <img src="Sample_User_Icon.png" alt="user_picture" width="30" height="30" class="rounded-circle me-2"> {% endcomment %}
-    <img src="{% static 'images/Sample_User_Icon.png' %}" alt="user_picture" width="30" height="30" class="rounded-circle me-2">
-    <span style="color: white; padding: 5px;" >nouran</span>
-
-  </button>
-  <ul class="dropdown-menu dropdown-menu-end w-25" aria-labelledby="userDropdown">
-    <li >
-        <form method="post" action=""  >
-            <button type="submit"  class="dropdown-item" id="logout">Logout</button>
-        </form>
-    </li>
-</ul>
- </div>
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <form class="d-flex" style="padding-right: 100px; padding-bottom: 10px; padding-top: 10px; width: 500px;">
+                  <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                  <button class="btn" id="search-button" type="submit">Search</button>
+              </form>
+              {% if user.is_authenticated %}
+                  <div class="dropdown">
+                      <button class="btn dropdown-toggle d-flex align-items-center text-light" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                          <span style="color: white; padding: 4px;">{{ user.username }} ({{ user.role }})</span>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-end w-25" aria-labelledby="userDropdown">
+                          <li>
+                              <form method="get" action="{% url 'accounts:logout' %}">
+                                  {% csrf_token %}
+                                  <button type="submit" class="dropdown-item" id="logout">Logout</button>
+                              </form>
+                          </li>
+                      </ul>
+                  </div>
+              {% else %}
+                  <a href="{% url 'accounts:login' %}" class="btn p-2 my-2 mx-3 h-25" style="width: 200px;" id="search-button">Login</a>
+              {% endif %}
+          </ul>
       </div>
-    </div>
-  </nav>
-
+  </div>
+</nav>

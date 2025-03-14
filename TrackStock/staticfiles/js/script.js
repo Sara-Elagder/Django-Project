@@ -1,10 +1,16 @@
 document.addEventListener("DOMContentLoaded", function () {
-    let navbarToggler = document.querySelector(".navbar-toggler");
-    let sidebar = document.querySelector(".sidebar");
-    let content = document.querySelector(".content");
+    const menuToggle = document.getElementById("menu-toggle");
+    const sidebar = document.getElementById("sidebar");
+    const container = document.querySelector(".container");
 
-    navbarToggler.addEventListener("click", function () {
-        sidebar.classList.toggle("menu-open");
-        content.classList.toggle("menu-open");
+    menuToggle.addEventListener("click", function () {
+        sidebar.classList.toggle("show");
+        if (sidebar.classList.contains("show")) {
+            document.querySelector(".container").style.marginLeft = "200px";
+            document.querySelector(".pagination-container").style.left = "200px";
+        } else {
+            document.querySelector(".container").style.marginLeft = "50px";
+            document.querySelector(".pagination-container").style.left = "50px";
+        }
     });
-   });
+});
