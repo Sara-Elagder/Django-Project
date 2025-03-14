@@ -13,11 +13,15 @@
        <script src="{% static 'js/script.js' %}"></script>
 </head>
 <body>
-    {% include "components/navbar.html" %}
     {% include "components/sidebar.html" %}
-    <main class="container ">
-           {% block main_content %}
+    {% include "components/navbar.html" %}
+
+    <main class="container">
+        <div class="content">
+            {% block main_content %}
            {% endblock main_content  %}
+        </div>
+         
     </main>
 
 {% include "components/footer.html" %}

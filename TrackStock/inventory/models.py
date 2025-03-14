@@ -15,8 +15,14 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     image = models.ImageField(upload_to='images/products/', null=True, blank=True)
 
-    def is_critical(self):
-        return self.quantity < self.critical_level
+    def get_stock_status(self):
+        if self.quantity == 0:
+            return "out_of_stock"
+        elif self.quantity < self.critical_level:
+            return "low_stock"
+        else:
+            return "in_stock"
+
 
     def __str__(self):
         return self.name
