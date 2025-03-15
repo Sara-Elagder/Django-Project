@@ -116,8 +116,8 @@
                             <i class="bi bi-flag"></i> Finish Shipment
                         </button>
                     </form>
-                {% elif shipment.status == "Pending" and not shipment.items.all %}
-                    <p class="text-danger"><strong>Add products first before finishing the shipment.</strong></p>
+                {% comment %} {% elif shipment.status == "Pending" and not shipment.items.all %}
+                    <p class="text-danger"><strong>Add products first before finishing the shipment.</strong></p> {% endcomment %}
                 {% elif shipment.status == 'Loaded' %}
                     <form method="post" action="{% url 'shipment:update_shipment_status' shipment.id %}" 
                           class="d-inline" 
