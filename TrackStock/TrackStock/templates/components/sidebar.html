@@ -1,0 +1,10 @@
+{% load static %}
+<div class="sidebar">
+    <a href="#"><i class="bi bi-speedometer2"></i> <span>Dashboard</span></a>
+    <a href="#"><i class="bi bi-box-seam"></i> <span>Inventory</span></a>
+    <a href="#"><i class="bi bi-truck"></i> <span>Shipment</span></a>
+    <a href="#"><i class="bi bi-card-checklist"></i> <span>Orders</span></a>
+    {% if user.is_authenticated and user.role == 'manager' %}
+        <a href="{% url 'accounts:registration' %}"><i class="bi bi-person-plus"></i> <span>Create Accounts</span></a>
+    {% endif %}
+</div>

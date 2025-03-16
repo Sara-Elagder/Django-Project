@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block main_content %} 
+<div class="container mt-5 justify-content-center">
+    <div class="row justify-content-center">
+        <div class="col-md-8">  
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-white text-center" style="background-color: var( --color-dark)">
+                    <h3 class="mb-0">Edit Product Quantity</h3>  
+                </div>
+                <div class="card-body p-4">  
+                    <p class="fs-5"><strong>Shipment:</strong> {{ shipment.factory_name }} 
+                        <span class="text-muted">({{ shipment.date_received|default:"Not Received Yet" }})</span>
+                    </p>
+                    <p class="fs-5"><strong>Product:</strong> {{ product.name }}</p>
+
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
+
+                        <input type="hidden" name="product" value="{{ form.instance.product.id }}">
+
+                        <div class="mb-4">
+                            <label for="{{ form.quantity.id_for_label }}" class="form-label fs-5">Quantity:</label>
+                            <input type="number" name="{{ form.quantity.name }}" id="{{ form.quantity.id_for_label }}" 
+                                   class="form-control form-control-lg" min="1" max="2147483647" 
+                                   value="{{ form.quantity.value|default:'' }}" required>
+                            
+                            {% if form.quantity.errors %}
+                                <div class="alert alert-danger mt-2">
+                                    {% for error in form.quantity.errors %}
+                                        <p class="mb-0">{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="submit" class="btn text-white px-5 py-2 fs-5" style="background-color:var(--color-dark) ;border-radius: 8px;">Save Changes</button>
+                            <a href="{% url 'shipment:shipment_detail' shipment.id %}" class="btn btn-secondary px-5 py-2 fs-5" style="border-radius: 8px;">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

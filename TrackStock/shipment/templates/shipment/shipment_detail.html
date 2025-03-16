@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% load static %}
+{% block header %}
+<style>
+    .btn.btn-add {
+        background-color: #4f72b8 !important;
+        color: white !important;
+    }
+/* centrize the containt*/
+    #shipment_container{
+        margin-left: 200px;
+        margin-top: 50px;
+    }
+</style>
+{% endblock header %}
+{% block main_content %}
+
+<div   id="shipment_container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">Shipment Details</h2>
+        <a href="{% url 'shipment:shipment_list' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Shipments
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            <h4 class="mb-3 text-dark fw-semibold"> Factory Name : {{ shipment.factory_name }}</h4>
+            
+            <p>
+                <strong>Date Received:</strong> 
+                {% if shipment.status == 'Received' and shipment.date_received %}
+                    {{ shipment.date_received|date:"d M Y, H:i A" }}
+                {% else %}
+                    <span class="text-muted">Not received yet</span>
+                {% endif %}
+            </p>
+
+            <p>
+                <strong>Status:</strong> 
+                {% if shipment.status == 'Pending' %}
+                    <span class="badge bg-warning text-dark">Pending</span>
+                {% elif shipment.status == 'Loaded' %}
+                    <span class="badge bg-primary">Loaded</span>
+                {% else %}
+                    <span class="badge bg-success">Received</span>
+                {% endif %}
+            </p>
+
+            {% if shipment.status == 'Pending' %}
+            <div class="mb-4">
+                <a href="{% url 'shipment:add_product_to_shipment' shipment.id %}" class="btn btn-add">
+                    <i class="bi bi-plus-circle"></i> Add Product
+                </a>
+            </div>
+            {% endif %}
+
+            <h5 class="mt-4">Products in Shipment</h5>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Category</th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in shipment.items.all %}  
+                        <tr>
+                            <td class="fw-semibold">{{ item.product.category.name }}</td>
+                            <td>{{ item.product.name }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>
+                                {% if shipment.status == 'Loaded' or shipment.status == 'Received' %}
+                                <button class="btn btn-sm btn-outline-secondary disabled-btn" disabled title="You cannot edit after finishing the shipment">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary disabled-btn" disabled title="You cannot delete after finishing the shipment">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                            {% else %}
+                                <a href="{% url 'shipment:edit_product' shipment.id item.id %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </a>
+                                <form method="post" action="{% url 'shipment:delete_product' shipment.id item.id %}" 
+                                      style="display:inline;" 
+                                      onsubmit="return confirm('Are you sure you want to delete this product?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </form>
+                            {% endif %}
+                            
+                            </td>
+                            
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center py-4">
+                                <i class="bi bi-box-seam fs-1 text-muted"></i>
+                                <p class="mt-2 text-muted">No products added.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    
+                    
+                </table>
+            </div>
+
+            <div class="mt-4">
+                {% if shipment.status == "Pending" and shipment.items.all %}
+                    <form method="post" action="{% url 'shipment:finish_shipment' shipment.id %}" 
+                        onsubmit="return confirm('Are you sure you want to finish this shipment?');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-warning">
+                            <i class="bi bi-flag"></i> Finish Shipment
+                        </button>
+                    </form>
+                {% comment %} {% elif shipment.status == "Pending" and not shipment.items.all %}
+                    <p class="text-danger"><strong>Add products first before finishing the shipment.</strong></p> {% endcomment %}
+                {% elif shipment.status == 'Loaded' %}
+                    <form method="post" action="{% url 'shipment:update_shipment_status' shipment.id %}" 
+                          class="d-inline" 
+                          onsubmit="return confirmMarkAsReceived();">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> Mark as Received
+                        </button>
+                    </form>
+                {% endif %}
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function confirmMarkAsReceived() {
+        return confirm("Are you sure you want to mark this shipment as Received?");
+    }
+</script>
+
+
+
+{% endblock %}

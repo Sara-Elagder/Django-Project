@@ -23,5 +23,6 @@ class Product(models.Model):
         else:
             return "in_stock"
 
+
     def __str__(self):
         return self.name

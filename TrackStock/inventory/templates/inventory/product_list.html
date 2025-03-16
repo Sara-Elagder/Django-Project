@@ -1,203 +1,112 @@
-{% extends 'base.html' %}
-{% block extra_css %}
-<style>
-  .card {
-      border-radius: 12px;
-      overflow: hidden;
-      transition: transform 0.2s ease-in-out;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  .card:hover {
-      transform: scale(1.03);
-  }
-
-  .card-img-container {
-      height: 200px;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #f8f9fa;
-      border-bottom: 1px solid #ddd;
-  }
-
-  .card-img-top {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-  }
-
-  .no-image-placeholder {
-      height: 100%;
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #6c757d;
-      font-size: 16px;
-      font-weight: bold;
-  }
-
-  .pagination-container {
-      position: sticky;
-      bottom: 0;
-      background: white;
-      padding: 10px 0;
-      z-index: 1000;
-      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-  }
-
-  .pagination .page-link {
-      border-radius: 8px;
-      margin: 0 5px;
-      color: #007bff;
-      font-weight: bold;
-      transition: background-color 0.2s;
-  }
-
-  .pagination .page-link:hover {
-      background-color: #007bff;
-      color: white;
-  }
-
-  .pagination .active .page-link {
-      background-color: #007bff;
-      border-color: #007bff;
-      color: white;
-  }
-
-.custom-category-select {
-    font-weight: bold;
-}
-
-.low-stock-option {
-    font-weight: bold;
-    color: #856404; /* Dark Yellow */
-    background-color: #fff3cd; /* Light Yellow */
-}
-
-.custom-category-select option:checked.low-stock-option {
-    background-color: #ffc107; /* Strong Yellow */
-    color: black;
-}
-
-.zero-stock-option {
-    font-weight: bold;
-    color: #721c24; /* Dark Red */
-    background-color: #f8d7da; /* Light Red */
-}
-
-.custom-category-select option:checked.zero-stock-option {
-    background-color: #dc3545; /* Strong Red */
-    color: white;
-}
+{% extends "base.html" %}
+{%load static %}
+{%block header %}
+<title>Inventory</title>
+{% endblock header %}
+{% block main_content %}
 
 
-</style>
-{% endblock %}
-
-{% block content %}
-<div class="container mt-4">
-  <h2>Inventory Products</h2>
-
-<div class="mb-3">
-  <form method="GET" action="">
-    <select name="category" class="form-select custom-category-select" onchange="this.form.submit()">
-      <option value="">All Categories</option>
-      {% for category in categories %}
-      <option value="{{ category.id }}" {% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>
-        {{ category.name }}
-      </option>
-      {% endfor %}
-      <option value="low_stock" class="low-stock-option" {% if request.GET.category == "low_stock" %}selected{% endif %}>
-        Low Stock
-      </option>
-      <option value="zero_stock" class="zero-stock-option" {% if request.GET.category == "zero_stock" %}selected{% endif %}>
-        Zero Stock
-      </option>
-    </select>
-  </form>
-</div>
-
-
-  <div class="row mt-4">
-    <h2 class="col-md-12 text-center mb-3"> {{ category_selected }}  </h2>
-    {% for product in products %}
-    <div class="col-md-4 mb-4">
-    <div class="card
-        {% if product.get_stock_status == "out_of_stock" %}border-danger
+<div class=" m-5" id="product_container">
+    <h2>Inventory</h2>
+  
+  <div class="mb-3">
+    <form method="GET" action="">
+      <select name="category" class="form-select custom-category-select" onchange="this.form.submit()">
+        <option value="">All Categories</option>
+        {% for category in categories %}
+        <option value="{{ category.id }}" {% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>
+          {{ category.name }}
+        </option>
+        {% endfor %}
+        <option value="low_stock" class="low-stock-option" {% if request.GET.category == "low_stock" %}selected{% endif %}>
+          Low Stock
+        </option>
+        <option value="zero_stock" class="zero-stock-option" {% if request.GET.category == "zero_stock" %}selected{% endif %}>
+          Zero Stock
+        </option> 
+      </select>
+    </form>
+  </div>
+  
+  
+    <div class="row mt-4">
+      <h2 class="col-md-12 text-center mb-3"> {{ category_selected }}  </h2>
+      {% for product in products %}
+      <div class="col-md-4 mb-4">
+        <div class="card {% if product.get_stock_status == "out_of_stock" %}border-danger
         {% elif product.get_stock_status == "low_stock" %}border-warning
         {% endif %}">
-        <div class="card-img-container">
-          {% if product.image %}
-          <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
-          {% else %}
-          <div class="no-image-placeholder">No Image</div>
-          {% endif %}
-        </div>
-
-        <div class="card-body">
-          <h5 class="card-title">{{ product.name }}</h5>
-          <p class="card-text">
-            <strong>Category:</strong> {{ product.category|default:"Not specified" }}<br>
-            <strong>Quantity:</strong> {{ product.quantity }}
+          <div class="card-img-container">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+            {% else %}
+            <div class="no-image-placeholder">No Image</div>
+            {% endif %}
+          </div>
+  
+          <div class="card-body">
+            <h5 class="card-title">{{ product.name }}</h5>
+            <p class="card-text">
+              <strong>Category:</strong> {{ product.category|default:"Not specified" }}<br>
+              <strong>Quantity:</strong> {{ product.quantity }}
             {% if product.get_stock_status == "out_of_stock" %}
             <span class="badge bg-danger ms-2">Out of Stock</span>
             {% elif product.get_stock_status == "low_stock" %}
             <span class="badge bg-warning ms-2">Low Stock</span>
             {% endif %}
-          </p>
-          <p class="card-text">
-            <small class="text-muted">Added on {{ product.created_at|date:"F d, Y" }}</small>
-          </p>
+            </p>
+            <p class="card-text">
+              <small class="text-muted">Added on {{ product.created_at|date:"F d, Y" }}</small>
+            </p>
+          </div>
         </div>
       </div>
-    </div>
-    {% empty %}
-    <div class="col-12">
-      <div class="alert alert-info">
-        No products are available. Add products from the admin dashboard.
+      {% empty %}
+      <div class="col-12">
+        <div class="alert alert-info">
+          No products are available. Add products from the admin dashboard.
+        </div>
       </div>
+      {% endfor %}
     </div>
-    {% endfor %}
-  </div>
-
-<div class="pagination-container">
-  <nav aria-label="Page navigation">
-    <ul class="pagination justify-content-center">
-      {% if products.has_previous %}
-        <li class="page-item">
-          <a class="page-link" href="?category={{ request.GET.category }}&page=1">First</a>
-        </li>
-        <li class="page-item">
-          <a class="page-link" href="?category={{ request.GET.category }}&page={{ products.previous_page_number }}">Previous</a>
-        </li>
-      {% endif %}
-
-      {% for num in products.paginator.page_range %}
-        {% if num == 1 or num == products.paginator.num_pages or num == products.number or num == products.number|add:'-1' or num == products.number|add:'1' or num == products.number|add:'-2' or num == products.number|add:'2' %}
-          <li class="page-item {% if num == products.number %}active{% endif %}">
-            <a class="page-link" href="?category={{ request.GET.category }}&page={{ num }}">{{ num }}</a>
+  
+  <div class="pagination-container">
+    <nav aria-label="Page navigation">
+      <ul class="pagination justify-content-center">
+        {% if products.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?category={{ request.GET.category }}&page=1">First</a>
           </li>
-        {% elif num == products.number|add:'-3' or num == products.number|add:'3' %}
-          <li class="page-item disabled">
-            <span class="page-link">...</span>
+          <li class="page-item">
+            <a class="page-link" href="?category={{ request.GET.category }}&page={{ products.previous_page_number }}">Previous</a>
           </li>
         {% endif %}
-      {% endfor %}
-
-      {% if products.has_next %}
-        <li class="page-item">
-          <a class="page-link" href="?category={{ request.GET.category }}&page={{ products.next_page_number }}">Next</a>
-        </li>
-        <li class="page-item">
-          <a class="page-link" href="?category={{ request.GET.category }}&page={{ products.paginator.num_pages }}">Last</a>
-        </li>
-      {% endif %}
-    </ul>
-  </nav>
-</div>
-
-</div>
-{% endblock %}
+  
+        {% for num in products.paginator.page_range %}
+          {% if num == 1 or num == products.paginator.num_pages or num == products.number or num == products.number|add:'-1' or num == products.number|add:'1' or num == products.number|add:'-2' or num == products.number|add:'2' %}
+            <li class="page-item {% if num == products.number %}active{% endif %}">
+              <a class="page-link" href="?category={{ request.GET.category }}&page={{ num }}">{{ num }}</a>
+            </li>
+          {% elif num == products.number|add:'-3' or num == products.number|add:'3' %}
+            <li class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+          {% endif %}
+        {% endfor %}
+  
+        {% if products.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?category={{ request.GET.category }}&page={{ products.next_page_number }}">Next</a>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="?category={{ request.GET.category }}&page={{ products.paginator.num_pages }}">Last</a>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+  
+  </div>
+  
+  
+{% endblock main_content  %}

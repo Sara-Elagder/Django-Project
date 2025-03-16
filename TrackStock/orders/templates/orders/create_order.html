@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Order</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        h1 {
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .order-items {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+        }
+        .order-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        .delete-row {
+            color: red;
+            cursor: pointer;
+        }
+        .add-row {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 10px 0;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .submit-btn {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 20px 0 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('.add-row').addEventListener('click', function() {
+                const items = document.querySelector('#order-items');
+                const itemCount = document.querySelectorAll('.order-item').length;
+                const template = document.querySelector('.order-item').cloneNode(true);
+
+                const inputs = template.querySelectorAll('select, input');
+                inputs.forEach(input => {
+                    const name = input.getAttribute('name');
+                    const id = input.getAttribute('id');
+
+                    if (name) {
+                        input.setAttribute('name', name.replace(/\d+/, itemCount));
+                    }
+                    if (id) {
+                        input.setAttribute('id', id.replace(/\d+/, itemCount));
+                    }
+
+                    input.value = '';
+                });
+
+                const deleteBtn = template.querySelector('.delete-row');
+                if (deleteBtn) {
+                    deleteBtn.addEventListener('click', function() {
+                        template.remove();
+                    });
+                }
+
+                items.appendChild(template);
+            });
+            
+            document.querySelectorAll('.delete-row').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (document.querySelectorAll('.order-item').length > 1) {
+                        this.closest('.order-item').remove();
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Create New Order</h1>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ order_form.supermarket.id_for_label }}">Supermarket:</label>
+                {{ order_form.supermarket }}
+            </div>
+
+            <h2>Order Items</h2>
+            {{ formset.management_form }}
+
+            <div id="order-items">
+                {% for form in formset %}
+                <div class="order-item">
+                    <div class="form-group">
+                        <label for="{{ form.product.id_for_label }}">Product:</label>
+                        {{ form.product }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.quantity.id_for_label }}">Quantity:</label>
+                        {{ form.quantity }}
+                    </div>
+
+                    {% if formset.can_delete %}
+                    <div class="form-group">
+                        <span class="delete-row">Delete</span>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <button type="button" class="add-row">Add Item</button>
+
+            <div>
+                <button type="submit" class="submit-btn">Create Order</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
