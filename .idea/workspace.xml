@@ -13,6 +13,15 @@
       <change beforePath="$PROJECT_DIR$/TrackStock/orders/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/orders/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TrackStock/orders/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/orders/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TrackStock/orders/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/orders/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrackStock/inventory/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/inventory/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrackStock/orders/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/orders/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrackStock/orders/migrations/0006_alter_order_status.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrackStock/orders/migrations/0007_alter_order_status.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrackStock/orders/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/orders/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrackStock/orders/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/orders/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrackStock/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,27 +31,28 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "history": [
+
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;history&quot;: [
     {
-      "state": "OPEN"
+      &quot;state&quot;: &quot;OPEN&quot;
     },
     {
-      "state": "OPEN",
-      "author": "Amir-Kamel"
+      &quot;state&quot;: &quot;OPEN&quot;,
+      &quot;author&quot;: &quot;Amir-Kamel&quot;
     }
   ],
-  "lastFilter": {
-    "state": "OPEN",
-    "author": "Amir-Kamel"
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;author&quot;: &quot;Amir-Kamel&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "git@github.com:Sara-Elagder/Django-Project.git",
-    "accountId": "c4de35ff-eab1-4e50-bf8d-7cfe0a525a0f"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:Sara-Elagder/Django-Project.git&quot;,
+    &quot;accountId&quot;: &quot;c4de35ff-eab1-4e50-bf8d-7cfe0a525a0f&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 6
@@ -54,10 +64,11 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;com.codeium.enabled&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;
+    &quot;git-widget-placeholder&quot;: &quot;amir&quot;
   }
 }</component>
   <component name="RecentsManager">
