@@ -84,11 +84,6 @@ def delete_product(request, order_id, item_id):
 
     if request.method == "POST":
         product = item.product
-        order = item.order
-
-        # Restore stock before deletion
-        product.quantity += item.quantity
-        product.save()
 
         # Remove the item from the order
         item.delete()
@@ -105,23 +100,34 @@ def add_product_to_order(request, order_id):
         product_id = request.POST.get("product")
         quantity = request.POST.get("quantity")
 
-        if not product_id or not quantity:
+        if not product_id or not quantity:  # Ensure both fields are filled
             messages.error(request, "Please select a product and enter a quantity.")
             return redirect("orders:order_details", order_id=order.id)
 
         try:
-            quantity = int(quantity)
+            quantity = int(quantity)  # Convert to integer
             if quantity <= 0:
-                raise ValueError("Quantity must be greater than zero.")
+                messages.error(request, "Quantity must be greater than zero.")
+                return redirect("orders:order_details", order_id=order.id)
         except ValueError:
             messages.error(request, "Invalid quantity entered.")
             return redirect("orders:order_details", order_id=order.id)
 
         product = get_object_or_404(Product, id=product_id)
-        order.add_product(product, quantity)  # Uses the fixed method
+
+        # Ensure quantity is not greater than available stock
+        if quantity > product.quantity:
+            messages.error(request, f"Only {product.quantity} units available in stock.")
+            return redirect("orders:order_details", order_id=order.id)
+
+        # Call the method to add/update the product in the order
+        order.add_product(product, quantity)
 
         messages.success(request, f"{quantity}x {product.name} added to the order.")
         return redirect("orders:order_details", order_id=order.id)
+
+    return redirect("orders:order_details", order_id=order.id)  # Fallback redirect
+
 
 
 @login_required
