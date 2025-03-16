@@ -26,23 +26,27 @@ class Order(models.Model):
         return f"Order for {self.supermarket.name} on {self.date_created.strftime('%Y-%m-%d')}"
 
     def add_product(self, product, quantity):
-        """Adds a product to the order, updating quantity if it already exists and adjusting stock"""
+        """Adds a product to the order, updates quantity if it exists, and adjusts stock"""
         if quantity > product.quantity:
             raise ValidationError(f"Not enough stock available for {product.name}.")
 
+        # Get or create the order item
         order_item, created = OrderItem.objects.get_or_create(
-            order=self, product=product, defaults={"quantity": quantity}
+            order=self, product=product, defaults={"quantity": 0}  # Ensure quantity is set
         )
 
         if not created:
+            # Ensure we don't exceed available stock
             if order_item.quantity + quantity > product.quantity:
                 raise ValidationError(f"Not enough stock available for {product.name}.")
-
             order_item.quantity += quantity
         else:
-            product.quantity -= quantity  # Reduce stock for new order item
+            order_item.quantity = quantity  # Set quantity if newly created
 
+        # Adjust product stock
+        product.quantity -= quantity
         product.save()
+
         order_item.save()
 
     def update_product(self, product, new_quantity):
