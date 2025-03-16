@@ -6,7 +6,7 @@
 {% block main_content %}
 
 
-<div class="container mt-4">
+<div class=" m-5" id="product_container">
     <h2>Inventory</h2>
   
   <div class="mb-3">
@@ -23,7 +23,7 @@
         </option>
         <option value="zero_stock" class="zero-stock-option" {% if request.GET.category == "zero_stock" %}selected{% endif %}>
           Zero Stock
-        </option>
+        </option> 
       </select>
     </form>
   </div>

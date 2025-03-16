@@ -7,11 +7,16 @@
         background-color: #4f72b8 !important;
         color: white !important;
     }
+    /* centrize the containt*/
+    #shipment_container{
+        margin-left: 200px;
+        margin-top: 50px;
+    }
 </style>
 {% endblock header %}
 
 {% block main_content %}
-<div class="container mt-5">
+<div  id="shipment_container">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold text-primary">Add Product to Shipment</h2>
         <a href="{% url 'shipment:shipment_detail' shipment.id %}" class="btn btn-outline-secondary">
