@@ -1,11 +1,12 @@
 from .forms import ProductForm, CategoryForm,ShipmentForm
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Shipment, ShipmentItem
-from inventory.models import Category , Product
+from inventory.models import   Product
 from django.utils.timezone import now
 from django.urls import reverse
 from django.contrib import messages
 from .forms import ShipmentItemForm
+from django.db import transaction
 
 def shipment_list(request):
     shipments = Shipment.objects.all()
@@ -74,18 +75,41 @@ def finish_shipment(request, shipment_id):
         shipment.save()
     return redirect(reverse('shipment:shipment_detail', args=[shipment.id]))
 
+# def update_shipment_status(request, shipment_id):
+#     shipment = get_object_or_404(Shipment, id=shipment_id)
+#     if shipment.status == "Loaded":  
+#         shipment.status = "Received"
+#         shipment.date_received = now()  
+#         shipment.save()
+#     return redirect(reverse('shipment:shipment_detail', args=[shipment.id]))
+
+
+
+
 def update_shipment_status(request, shipment_id):
     shipment = get_object_or_404(Shipment, id=shipment_id)
-    if shipment.status == "Loaded":  
-        shipment.status = "Received"
-        shipment.date_received = now()  
-        shipment.save()
-    return redirect(reverse('shipment:shipment_detail', args=[shipment.id]))
+
+    if shipment.status == 'Loaded':
+        with transaction.atomic():  
+            shipment.status = 'Received'
+            shipment.save()
+
+            for item in shipment.items.all():
+                product = item.product
+                product.quantity += item.quantity  
+                product.save()
+
+            messages.success(request, "Shipment marked as received and inventory updated.")
+    
+    return redirect('shipment:shipment_detail', shipment_id=shipment.id)
+
 
 def shipment_delete(request, shipment_id):
     shipment = get_object_or_404(Shipment, id=shipment_id)
     shipment.delete()
     return redirect(reverse('shipment:shipment_list'))
+
+
 
 def edit_product(request, shipment_id, item_id):
     item = get_object_or_404(ShipmentItem, id=item_id, shipment_id=shipment_id)
