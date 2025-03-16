@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block header %}
+
+
+<style>
+    /* Unique Orders Table Styling */
+    #orders-table-container {
+        margin-top: 20px;
+    }
+
+    /* Table Styling */
+    #orders-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #orders-table thead {
+        background-color: #343a40;
+        color: white;
+    }
+
+    #orders-table tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    /* Status Badges */
+    #orders-table .badge-pending {
+        background-color: #e6b800;
+        color: #333;
+        font-weight: bold;
+    }
+
+    #orders-table .badge-loaded {
+        background-color: #007bff;
+        color: #fff;
+        font-weight: bold;
+    }
+
+    #orders-table .badge-confirmed {
+        background-color: #218838;
+        color: #fff;
+        font-weight: bold;
+    }
+
+    /* Responsive Table */
+    #orders-table-container {
+        overflow-x: auto;
+    }
+
+    /* No Orders Message */
+    #no-orders-message {
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #888;
+        padding: 20px;
+    }
+
+    /* Responsive Design for Small Screens */
+    @media (max-width: 768px) {
+        #orders-table thead {
+            display: none;
+        }
+
+        #orders-table, #orders-table tbody, #orders-table tr, #orders-table td {
+            display: block;
+            width: 100%;
+        }
+
+        #orders-table tr {
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background: #fff;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #orders-table td {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #orders-table td:last-child {
+            border-bottom: none;
+        }
+
+        #orders-table td::before {
+            content: attr(data-label);
+            font-weight: bold;
+            color: #555;
+        }
+    }
+</style>
+
+<script>
+    function confirmDelete(event, form) {
+        event.preventDefault(); // Prevent form submission
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to undo this action!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    }
+</script>
+{% endblock header %}
+
+{% block main_content %}
+<div class="container" id="orders-table-container">
+    <h2 class="mb-3 text-center"><i class="fas fa-box"></i> Orders List</h2>
+
+
+    <div class="text-end mb-3">
+        <a href="{% url 'orders:create_order' %}" class="btn btn-success">
+            <i class="fas fa-plus-circle"></i> Create New Order
+        </a>
+    </div>
+    <hr>
+
+    <div class="table-responsive">
+        {% if orders %}
+        <table class="table table-striped table-hover" id="orders-table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Supermarket</th>
+                <th>Date Created</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for order in orders %}
+            <tr>
+                <td data-label="#"> {{ forloop.counter }} </td>
+                <td data-label="Supermarket"> {{ order.supermarket.name }} </td>
+                <td data-label="Date Created"> {{ order.date_created|date:"Y-m-d H:i" }} </td>
+                <td data-label="Status">
+                    {% if order.status == "Pending" %}
+                    <span class="badge badge-pending">
+                                <i class="fas fa-hourglass-half"></i> Pending
+                            </span>
+                    {% elif order.status == "Loaded" %}
+                    <span class="badge badge-loaded">
+                                <i class="fas fa-truck"></i> Loaded
+                            </span>
+                    {% else %}
+                    <span class="badge badge-confirmed">
+                                <i class="fas fa-check-circle"></i> Confirmed
+                            </span>
+                    {% endif %}
+                </td>
+                <td data-label="Actions">
+                    <a href="{% url 'orders:order_details' order.id %}" class="btn btn-sm btn-outline-primary btn-view">
+                        <i class="fas fa-eye"></i> View
+                    </a>
+                    <form method="post" action="{% url 'orders:order_delete' order.id %}"
+                          class="d-inline"
+                          onsubmit="confirmDelete(event, this);">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p id="no-orders-message"><i class="fas fa-exclamation-circle"></i> No orders available.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

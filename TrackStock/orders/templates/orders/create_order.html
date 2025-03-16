@@ -106,7 +106,7 @@
 
                 items.appendChild(template);
             });
-            
+
             document.querySelectorAll('.delete-row').forEach(btn => {
                 btn.addEventListener('click', function() {
                     if (document.querySelectorAll('.order-item').length > 1) {
@@ -118,48 +118,48 @@
     </script>
 </head>
 <body>
-    <div class="container">
-        <h1>Create New Order</h1>
+<div class="container">
+    <h1>Create New Order</h1>
 
-        <form method="post">
-            {% csrf_token %}
+    <form method="post">
+        {% csrf_token %}
 
-            <div class="form-group">
-                <label for="{{ order_form.supermarket.id_for_label }}">Supermarket:</label>
-                {{ order_form.supermarket }}
-            </div>
+        <div class="form-group">
+            <label for="{{ order_form.supermarket.id_for_label }}">Supermarket:</label>
+            {{ order_form.supermarket }}
+        </div>
 
-            <h2>Order Items</h2>
-            {{ formset.management_form }}
+        <h2>Order Items</h2>
+        {{ formset.management_form }}
 
-            <div id="order-items">
-                {% for form in formset %}
-                <div class="order-item">
-                    <div class="form-group">
-                        <label for="{{ form.product.id_for_label }}">Product:</label>
-                        {{ form.product }}
-                    </div>
-
-                    <div class="form-group">
-                        <label for="{{ form.quantity.id_for_label }}">Quantity:</label>
-                        {{ form.quantity }}
-                    </div>
-
-                    {% if formset.can_delete %}
-                    <div class="form-group">
-                        <span class="delete-row">Delete</span>
-                    </div>
-                    {% endif %}
+        <div id="order-items">
+            {% for form in formset %}
+            <div class="order-item">
+                <div class="form-group">
+                    <label for="{{ form.product.id_for_label }}">Product:</label>
+                    {{ form.product }}
                 </div>
-                {% endfor %}
-            </div>
 
-            <button type="button" class="add-row">Add Item</button>
+                <div class="form-group">
+                    <label for="{{ form.quantity.id_for_label }}">Quantity:</label>
+                    {{ form.quantity }}
+                </div>
 
-            <div>
-                <button type="submit" class="submit-btn">Create Order</button>
+                {% if formset.can_delete %}
+                <div class="form-group">
+                    <span class="delete-row">Delete</span>
+                </div>
+                {% endif %}
             </div>
-        </form>
-    </div>
+            {% endfor %}
+        </div>
+
+        <button type="button" class="add-row">Add Item</button>
+
+        <div>
+            <button type="submit" class="submit-btn">Create Order</button>
+        </div>
+    </form>
+</div>
 </body>
 </html>
