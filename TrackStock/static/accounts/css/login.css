@@ -1,0 +1,85 @@
+
+:root {
+  --color-lightest: rgb(223, 242, 235);
+  --color-lighter: rgb(168, 216, 219); 
+  --color-medium: rgb(122, 178, 211);  
+  --color-dark: rgb(44, 69, 112);
+}
+*,
+*:before,
+:after{
+padding: 0;
+margin: 0;
+box-sizing: border-box;
+}
+
+
+#cover{
+  background-image: url("/static/accounts/images/photo2.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  height: 100vh;
+  width: 100%;
+  position: absolute;
+}
+form{
+height: 520px;
+width: 400px;
+background-color: rgba(255,255,255,0.13);
+position: absolute;
+transform: translate(-50%,-50%);
+top: 50%;
+left: 50%;
+border-radius: 10px;
+backdrop-filter: blur(20px);
+border: 2px solid rgba(89, 115, 199, 0.1);
+box-shadow: 0 0 40px  rgba(89, 115, 199, 0.1);
+padding: 50px 35px;
+}
+form{
+font-family: 'Poppins',sans-serif;
+color: #002677e1;
+letter-spacing: 0.5px;
+outline: none;
+border: none;
+}
+form h3{
+font-size: 32px;
+font-weight: 500;
+line-height: 42px;
+text-align: center;
+}
+
+label{
+display: block;
+margin-top: 30px;
+font-size: 16px;
+font-weight: 500;
+}
+input{
+display: block;
+height: 50px;
+width: 100%;
+background-color: rgba(72, 137, 211, 0.288);
+border-radius: 10px;
+padding: 0 10px;
+margin-top: 8px;
+font-size: 14px;
+font-weight: 300;
+}
+::placeholder{
+color: var(--color-lightest);
+}
+button{
+margin-top: 50px;
+width: 100%;
+background-color:var(--color-dark);
+color: white;
+border: none;
+padding: 15px 0;
+font-size: 18px;
+font-weight: 600;
+border-radius: 5px;
+cursor: pointer;
+}
