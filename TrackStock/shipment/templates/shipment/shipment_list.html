@@ -7,11 +7,15 @@
         background-color: #4f72b8 !important;
         color: white !important;
     }
+    #shipment_list_container{
+        margin-left: 100px;
+        margin-top: 70px;
+    }
 </style>
 {% endblock header %}
 
 {% block main_content %}
-<div class="container mt-5">
+<div id="shipment_list_container" >
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold text-primary">Shipments</h2>
         <a href="{% url 'shipment:shipment_create' %}" class="btn shipment create-btn shadow-sm">
@@ -19,7 +23,7 @@
         </a>
     </div>
 
-    <div class="card shadow-sm">
+    <div class="card shadow-sm"  >
         <div class="card-body p-4">
             <table class="table table-hover align-middle">
                 <thead class="table-dark">

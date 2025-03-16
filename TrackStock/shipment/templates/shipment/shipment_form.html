@@ -3,15 +3,19 @@
 {% block header %}
 <title>Create Shipment</title>
 <style>
-    .container {
-        height:600px !important;
-        min-height:600px !important;
+    #card_width{
+        margin-left: 350px;
+        margin-top:40px;
     }
     .card.height{
       height:40vh ; 
+        
+    }
+    .card-header{
+        background-color:  rgb(44, 69, 112) !important;
     }
     .shipment-btn {
-        background-color: #4f72b8 !important;
+        background-color: rgb(44, 69, 112) !important;
         color: white !important;
     }
     input, select, textarea {
@@ -30,12 +34,13 @@
         from { opacity: 0; transform: translateY(10px); }
         to { opacity: 1; transform: translateY(0); }
     }
+    /* note on styling card is not resposive */
 </style>
 {% endblock header %}
 {% block main_content %}
-<div class="container d-flex justify-content-center align-items-center">
+<div class="  d-flex justify-content-center align-items-center" id="card_width">
     <div class="card height shadow-lg rounded-4 border-0 p-4" style="max-width: 600px; width: 100%;">
-        <div class="card-header bg-primary text-white text-center py-4 rounded-top-4">
+        <div class="card-header  text-white text-center py-4 rounded-top-4" >
             <h2 class="mb-0 fw-bold"><i class="bi bi-box-seam"></i> Create Shipment</h2>
         </div>
         <div class="card-body">
