@@ -33,5 +33,5 @@ class LoginView (FormView):
 
 class LogoutView(View):
     def get(self, request, *args, **kwargs):
-        logout(request)  # Log the user out
-        return redirect('accounts:login')  # Redirect to the login page
+        logout(request) 
+        return redirect('accounts:login') 
