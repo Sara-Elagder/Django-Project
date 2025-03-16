@@ -24,22 +24,22 @@ box-sizing: border-box;
   position: absolute;
 }
 form{
-height: 520px;
+height: 550px;
 width: 400px;
-background-color: rgba(255,255,255,0.13);
+background-color: rgba(255, 255, 255, 0.137);
 position: absolute;
 transform: translate(-50%,-50%);
 top: 50%;
 left: 50%;
 border-radius: 10px;
-backdrop-filter: blur(20px);
-border: 2px solid rgba(89, 115, 199, 0.1);
-box-shadow: 0 0 40px  rgba(89, 115, 199, 0.1);
+backdrop-filter: blur(30px);
+border: 2px solid rgba(34, 68, 180, 0.1);
+box-shadow: 0 0 40px  rgba(52, 84, 190, 0.1);
 padding: 50px 35px;
 }
 form{
 font-family: 'Poppins',sans-serif;
-color: #002677e1;
+color:var(--color-dark);
 letter-spacing: 0.5px;
 outline: none;
 border: none;
@@ -82,4 +82,7 @@ font-size: 18px;
 font-weight: 600;
 border-radius: 5px;
 cursor: pointer;
+}
+.alert{
+  color : rgb(105, 29, 29);
 }
