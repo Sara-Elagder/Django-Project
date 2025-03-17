@@ -72,6 +72,21 @@
         <a href="{% url 'orders:order_list' %}" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Back to Orders
         </a>
+
+            {% if order.status != "Confirmed" %}
+        <form action="{% url 'orders:change_order_status' order.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary btn-sm mt-3 inline-block">
+                {% if order.status == "Pending" %}
+                    Mark as Loaded
+                {% elif order.status == "Loaded" %}
+                    Mark as Confirmed
+                {% endif %}
+            </button>
+        </form>
+    {% endif %}
+
+
     </div>
 
     <h4 class="mt-4"><i class="fas fa-table"></i> Products in Order</h4>
@@ -83,7 +98,9 @@
                 <th>Quantity</th>
                 <th>Category</th>
                 <th>Stock Status</th>
+                {% if order.status != "Loaded" and order.status != "Confirmed" %}
                 <th>Actions</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -94,6 +111,8 @@
                 <td data-label="Quantity">{{ item.quantity }}</td>
                 <td data-label="Category">{{ item.product.category.name }}</td>
                 <td data-label="Stock Status">{{ item.product.get_stock_status  }}: {{ item.product.quantity }}</td>
+
+                {% if order.status != "Loaded" and order.status != "Confirmed" %}
                 <td data-label="Actions">
                  <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                 data-bs-target="#editQuantityModal"
@@ -109,6 +128,7 @@
                         </button>
                     </form>
                 </td>
+                {% endif %}
             </tr>
             {% empty %}
             <tr>
@@ -118,6 +138,7 @@
         </tbody>
     </table>
 
+    {% if order.status != "Loaded" and order.status != "Confirmed" %}
           <h4 class="mt-4"><i class="fas fa-plus-circle"></i> Add Product</h4>
  <form method="post" action="{% url 'orders:add_product_to_order' order.id %}">
     {% csrf_token %}
@@ -155,6 +176,7 @@
     </div>
 </form>
 
+
 </div>
 
 <div class="modal fade" id="editQuantityModal" tabindex="-1" aria-labelledby="editQuantityModalLabel" aria-hidden="true">
@@ -182,6 +204,7 @@
         </div>
     </div>
 </div>
+{% endif %}
 
 {% if messages %}
     {% for message in messages %}

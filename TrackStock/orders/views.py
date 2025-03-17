@@ -85,8 +85,14 @@ def order_details(request, order_id):
 
 @login_required
 def order_delete(request, order_id):
+
+    order = get_object_or_404(Order, id=order_id)
+
+    if order.status == "Confirmed":
+        messages.error(request, "You cannot delete the order as it has been already confirmed.")
+        return redirect("orders:order_list")
+
     if request.method == "POST":
-        order = get_object_or_404(Order, id=order_id)
 
         # Restore product stock before deleting order
         for item in order.items.all():  # order.items refers to related OrderItem objects
@@ -102,10 +108,23 @@ def order_delete(request, order_id):
 
 @login_required
 def delete_product(request, order_id, item_id):
+    order = get_object_or_404(Order, id=order_id)
+
+    if order.status == "Confirmed" or order.status == "Loaded":
+        messages.error(request, "You cannot add products to the order as it has been already loaded or confirmed.")
+        return redirect("orders:order_details", order_id=order.id)
+
     item = get_object_or_404(OrderItem, id=item_id, order_id=order_id)
+
+
+    if order.status == "Confirmed" or order.status == "Loaded":
+        messages.error(request, "You cannot delete the order as it has been already loaded or confirmed.")
+        return redirect("orders:order_details", order_id=order.id)
+
 
     if request.method == "POST":
         product = item.product
+
 
         # Remove the item from the order
         item.delete()
@@ -117,10 +136,16 @@ def delete_product(request, order_id, item_id):
 
 @login_required
 def add_product_to_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+
+    if order.status == "Confirmed" or order.status == "Loaded":
+        messages.error(request, "You cannot add products to the order as it has been already loaded or confirmed.")
+        return redirect("orders:order_details", order_id=order.id)
+
     if request.method == "POST":
-        order = get_object_or_404(Order, id=order_id)
         product_id = request.POST.get("product")
         quantity = request.POST.get("quantity")
+
 
         if not product_id or not quantity:
             messages.error(request, "Please select a product and enter a quantity.")
@@ -133,22 +158,30 @@ def add_product_to_order(request, order_id):
 
         product = get_object_or_404(Product, id=product_id)
 
-        if quantity > product.quantity:
-            messages.error(request, f"Only {product.quantity} units available in stock.")
-            return redirect("orders:order_details", order_id=order.id)
+        error_message = order.add_product(product, quantity)
 
-        order.add_product(product, quantity)
-        messages.success(request, f"{quantity}x {product.name} added to the order.")
+        if error_message:
+            messages.error(request, error_message)
+        else:
+            messages.success(request, f"{quantity}x {product.name} added to the order.")
 
     return redirect("orders:order_details", order_id=order.id)
 
 
+
 @login_required
 def edit_product_in_order(request, order_id, product_id):
+    order = get_object_or_404(Order, id=order_id)
+
+    if order.status == "Confirmed" or order.status == "Loaded":
+        messages.error(request, "You cannot edit the order as it has been already loaded or confirmed.")
+        return redirect("orders:order_details", order_id=order.id)
+
     if request.method == "POST":
-        order = get_object_or_404(Order, id=order_id)
         product = get_object_or_404(Product, id=product_id)
         new_quantity = request.POST.get("quantity")
+
+
 
         new_quantity = int(new_quantity)
         if new_quantity < 1:
@@ -163,4 +196,23 @@ def edit_product_in_order(request, order_id, product_id):
         else:
             messages.success(request, f"Quantity updated to {new_quantity} for {product.name}.")
 
+    return redirect("orders:order_details", order_id=order.id)
+
+
+@login_required
+def change_order_status(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+
+    # 🚨 Prevent further changes if the order is already confirmed
+    if order.status == "Confirmed":
+        messages.error(request, "You cannot change the status of a confirmed order.")
+        return redirect("orders:order_details", order_id=order.id)
+
+    if order.status == "Pending":
+        order.status = "Loaded"
+    elif order.status == "Loaded":
+        order.status = "Confirmed"
+
+    order.save()
+    messages.success(request, f"Order status changed to {order.status}.")
     return redirect("orders:order_details", order_id=order.id)

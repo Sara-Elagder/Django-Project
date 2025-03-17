@@ -29,7 +29,7 @@ class Order(models.Model):
         """Adds a product to the order, updates quantity if it exists, and adjusts stock"""
 
         if quantity > product.quantity:
-            raise ValidationError(f"Not enough stock available for {product.name}.")
+            return "Not enough stock available."
 
         # Ensure quantity is always set
         order_item, created = OrderItem.objects.get_or_create(
@@ -38,16 +38,14 @@ class Order(models.Model):
             defaults={"quantity": 0}  # ✅ Ensures quantity is never NULL
         )
 
-        if not created:
-            if order_item.quantity + quantity > product.quantity:
-                return None
-            order_item.quantity += quantity
-        else:
-            order_item.quantity = quantity  # ✅ Ensure initial quantity is set
+        if quantity > product.quantity:  # ✅ Check only the newly requested quantity
+            return f"Only {product.quantity} units available in stock."
 
-        product.quantity -= quantity  # Reduce stock
+        order_item.quantity += quantity  # ✅ Correctly increase order quantity
+        product.quantity -= quantity  # ✅ Reduce stock correctly
         product.save()
         order_item.save()
+        return None  # ✅ Return None to indicate success
 
     def update_product(self, product, new_quantity):
         """Updates the quantity of a product in the order and adjusts stock"""
