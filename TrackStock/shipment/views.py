@@ -1,16 +1,20 @@
 from .forms import ProductForm, CategoryForm,ShipmentForm
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Shipment, ShipmentItem
-from inventory.models import Category , Product
+from inventory.models import   Product
 from django.utils.timezone import now
 from django.urls import reverse
 from django.contrib import messages
 from .forms import ShipmentItemForm
+from django.db import transaction
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def shipment_list(request):
     shipments = Shipment.objects.all()
     return render(request, 'shipment/shipment_list.html', {'shipments': shipments})
 
+@login_required
 def shipment_create(request):
     if request.method == "POST":
         form = ShipmentForm(request.POST)
@@ -21,7 +25,7 @@ def shipment_create(request):
         form = ShipmentForm()
     return render(request, 'shipment/shipment_form.html', {'form': form})
 
-
+@login_required
 def shipment_detail(request, shipment_id):
     shipment = get_object_or_404(Shipment, id=shipment_id)
     shipment_items = ShipmentItem.objects.filter(shipment=shipment)  
@@ -32,7 +36,7 @@ def shipment_detail(request, shipment_id):
     })
 
 
-
+@login_required
 def add_product_to_shipment(request, shipment_id):
     shipment = get_object_or_404(Shipment, id=shipment_id)
     products = Product.objects.all()  
@@ -66,7 +70,7 @@ def add_product_to_shipment(request, shipment_id):
         "products": products,
         "categories": categories
     })
-
+@login_required
 def finish_shipment(request, shipment_id):
     shipment = get_object_or_404(Shipment, id=shipment_id)
     if shipment.status == "Pending":
@@ -74,19 +78,42 @@ def finish_shipment(request, shipment_id):
         shipment.save()
     return redirect(reverse('shipment:shipment_detail', args=[shipment.id]))
 
+# def update_shipment_status(request, shipment_id):
+#     shipment = get_object_or_404(Shipment, id=shipment_id)
+#     if shipment.status == "Loaded":  
+#         shipment.status = "Received"
+#         shipment.date_received = now()  
+#         shipment.save()
+#     return redirect(reverse('shipment:shipment_detail', args=[shipment.id]))
+
+
+
+@login_required
 def update_shipment_status(request, shipment_id):
     shipment = get_object_or_404(Shipment, id=shipment_id)
-    if shipment.status == "Loaded":  
-        shipment.status = "Received"
-        shipment.date_received = now()  
-        shipment.save()
-    return redirect(reverse('shipment:shipment_detail', args=[shipment.id]))
 
+    if shipment.status == 'Loaded':
+        with transaction.atomic():  
+            shipment.status = 'Received'
+            shipment.save()
+
+            for item in shipment.items.all():
+                product = item.product
+                product.quantity += item.quantity  
+                product.save()
+
+            messages.success(request, "Shipment marked as received and inventory updated.")
+    
+    return redirect('shipment:shipment_detail', shipment_id=shipment.id)
+
+@login_required
 def shipment_delete(request, shipment_id):
     shipment = get_object_or_404(Shipment, id=shipment_id)
     shipment.delete()
     return redirect(reverse('shipment:shipment_list'))
 
+
+@login_required
 def edit_product(request, shipment_id, item_id):
     item = get_object_or_404(ShipmentItem, id=item_id, shipment_id=shipment_id)
 
@@ -105,7 +132,7 @@ def edit_product(request, shipment_id, item_id):
     return render(request, 'shipment/edit_product.html', {'form': form, 'shipment': item.shipment, 'product': item.product})
 
 
-
+@login_required
 def delete_product(request, shipment_id, item_id):
     item = get_object_or_404(ShipmentItem, id=item_id, shipment_id=shipment_id)
     if request.method == "POST":
@@ -113,6 +140,7 @@ def delete_product(request, shipment_id, item_id):
         messages.success(request, "Product deleted successfully.")
     return redirect('shipment:shipment_detail', shipment_id=shipment_id)
 
+@login_required
 def add_product(request):
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
@@ -131,6 +159,7 @@ def add_product(request):
     }
     return render(request, 'shipment/add_product.html', context)
 
+@login_required
 def add_category(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST, request.FILES)

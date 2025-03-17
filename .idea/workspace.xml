@@ -1,7 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="b8a8b697-d074-4c4f-a4a8-ecef3907018d" name="Changes" comment="" />
+    <list default="true" id="b8a8b697-d074-4c4f-a4a8-ecef3907018d" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/TrackStock/orders/templates/orders/order_details.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrackStock/TrackStock/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/TrackStock/templates/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrackStock/orders/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/orders/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrackStock/orders/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/orders/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrackStock/orders/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/orders/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrackStock/orders/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/orders/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrackStock/inventory/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/inventory/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrackStock/orders/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/orders/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrackStock/orders/migrations/0006_alter_order_status.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrackStock/orders/migrations/0007_alter_order_status.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrackStock/orders/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/orders/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrackStock/orders/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/orders/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrackStock/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/requirements.txt" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -10,23 +31,51 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 6
-}]]></component>
+
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;history&quot;: [
+    {
+      &quot;state&quot;: &quot;OPEN&quot;
+    },
+    {
+      &quot;state&quot;: &quot;OPEN&quot;,
+      &quot;author&quot;: &quot;Amir-Kamel&quot;
+    }
+  ],
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;author&quot;: &quot;Amir-Kamel&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:Sara-Elagder/Django-Project.git&quot;,
+    &quot;accountId&quot;: &quot;c4de35ff-eab1-4e50-bf8d-7cfe0a525a0f&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="2uGS6HoOEK3RpaiqNJcnoL3R4CZ" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "com.codeium.enabled": "true",
-    "git-widget-placeholder": "Amir"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;com.codeium.enabled&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;amir&quot;
   }
-}]]></component>
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/TrackStock/orders/templates/orders" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -44,5 +93,16 @@
       <updated>1741873257572</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

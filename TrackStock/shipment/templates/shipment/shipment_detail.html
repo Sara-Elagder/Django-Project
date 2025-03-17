@@ -123,14 +123,16 @@
                 {% comment %} {% elif shipment.status == "Pending" and not shipment.items.all %}
                     <p class="text-danger"><strong>Add products first before finishing the shipment.</strong></p> {% endcomment %}
                 {% elif shipment.status == 'Loaded' %}
+                  
                     <form method="post" action="{% url 'shipment:update_shipment_status' shipment.id %}" 
-                          class="d-inline" 
-                          onsubmit="return confirmMarkAsReceived();">
+                        class="d-inline" 
+                        onsubmit="return confirmMarkAsReceived();">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-success">
                             <i class="bi bi-check-circle"></i> Mark as Received
                         </button>
                     </form>
+
                 {% endif %}
                 
             </div>
