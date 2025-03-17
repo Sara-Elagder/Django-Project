@@ -82,13 +82,23 @@ def order_details(request, order_id):
         'products': products,
         'categories': categories
     })
+
 @login_required
 def order_delete(request, order_id):
     if request.method == "POST":
         order = get_object_or_404(Order, id=order_id)
+
+        # Restore product stock before deleting order
+        for item in order.items.all():  # order.items refers to related OrderItem objects
+            item.product.quantity += item.quantity
+            item.product.save()
+
         order.delete()
-        messages.success(request, "Order deleted successfully.")
+        messages.success(request, "Order deleted successfully, and product stock has been restored.")
+
     return redirect(reverse('orders:order_list'))
+
+
 
 @login_required
 def delete_product(request, order_id, item_id):
@@ -112,34 +122,25 @@ def add_product_to_order(request, order_id):
         product_id = request.POST.get("product")
         quantity = request.POST.get("quantity")
 
-
-        if not product_id or not quantity:  # Ensure both fields are filled
+        if not product_id or not quantity:
             messages.error(request, "Please select a product and enter a quantity.")
             return redirect("orders:order_details", order_id=order.id)
 
-        try:
-            quantity = int(quantity)  # Convert to integer
-            if quantity <= 0:
-                messages.error(request, "Quantity must be greater than zero.")
-                return redirect("orders:order_details", order_id=order.id)
-        except ValueError:
-            messages.error(request, "Invalid quantity entered.")
+        quantity = int(quantity)
+        if quantity <= 0:
+            messages.error(request, "Quantity must be greater than zero.")
             return redirect("orders:order_details", order_id=order.id)
 
         product = get_object_or_404(Product, id=product_id)
 
-        # Ensure quantity is not greater than available stock
         if quantity > product.quantity:
             messages.error(request, f"Only {product.quantity} units available in stock.")
             return redirect("orders:order_details", order_id=order.id)
 
-        # Call the method to add/update the product in the order
         order.add_product(product, quantity)
-
         messages.success(request, f"{quantity}x {product.name} added to the order.")
-        return redirect("orders:order_details", order_id=order.id)
 
-    return redirect("orders:order_details", order_id=order.id)  # Fallback redirect
+    return redirect("orders:order_details", order_id=order.id)
 
 
 @login_required
@@ -149,15 +150,17 @@ def edit_product_in_order(request, order_id, product_id):
         product = get_object_or_404(Product, id=product_id)
         new_quantity = request.POST.get("quantity")
 
-        try:
-            new_quantity = int(new_quantity)
-            if new_quantity < 1:
-                messages.error(request, "Quantity must be at least 1.")
-                return redirect("orders:order_details", order_id=order.id)
-        except ValueError:
-            messages.error(request, "Invalid quantity.")
+        new_quantity = int(new_quantity)
+        if new_quantity < 1:
+            messages.error(request, "Quantity must be at least 1.")
             return redirect("orders:order_details", order_id=order.id)
 
-        order.update_product(product, new_quantity)
-        messages.success(request, f"Quantity updated to {new_quantity} for {product.name}.")
-        return redirect("orders:order_details", order_id=order.id)
+        # Try updating the product without redirecting to an error page
+        error_message = order.update_product(product, new_quantity)
+
+        if error_message:  # If there's an error, show it to the user
+            messages.error(request, error_message)
+        else:
+            messages.success(request, f"Quantity updated to {new_quantity} for {product.name}.")
+
+    return redirect("orders:order_details", order_id=order.id)

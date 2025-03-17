@@ -193,5 +193,14 @@
         </div>
         {% endif %}
     </div>
+
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
 </div>
 {% endblock %}
