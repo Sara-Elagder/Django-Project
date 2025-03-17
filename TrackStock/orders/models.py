@@ -27,27 +27,25 @@ class Order(models.Model):
 
     def add_product(self, product, quantity):
         """Adds a product to the order, updates quantity if it exists, and adjusts stock"""
-        if quantity > product.quantity:
-            raise ValidationError(f"Not enough stock available for {product.name}.")
 
-        # Get or create the order item
+        if quantity > product.quantity:
+            return "Not enough stock available."
+
+        # Ensure quantity is always set
         order_item, created = OrderItem.objects.get_or_create(
-            order=self, product=product, defaults={"quantity": 0}  # Ensure quantity is set
+            order=self,
+            product=product,
+            defaults={"quantity": 0}  # ✅ Ensures quantity is never NULL
         )
 
-        if not created:
-            # Ensure we don't exceed available stock
-            if order_item.quantity + quantity > product.quantity:
-                raise ValidationError(f"Not enough stock available for {product.name}.")
-            order_item.quantity += quantity
-        else:
-            order_item.quantity = quantity  # Set quantity if newly created
+        if quantity > product.quantity:  # ✅ Check only the newly requested quantity
+            return f"Only {product.quantity} units available in stock."
 
-        # Adjust product stock
-        product.quantity -= quantity
+        order_item.quantity += quantity  # ✅ Correctly increase order quantity
+        product.quantity -= quantity  # ✅ Reduce stock correctly
         product.save()
-
         order_item.save()
+        return None  # ✅ Return None to indicate success
 
     def update_product(self, product, new_quantity):
         """Updates the quantity of a product in the order and adjusts stock"""
@@ -57,15 +55,15 @@ class Order(models.Model):
             stock_difference = new_quantity - order_item.quantity
 
             if stock_difference > product.quantity:
-                raise ValidationError(f"Not enough stock available for {product.name}.")
+                return f"Not enough stock available for {product.name}."
 
             order_item.quantity = new_quantity
             product.quantity -= stock_difference  # Adjust stock
 
             product.save()
             order_item.save()
-        else:
-            raise ValidationError(f"{product.name} is not in this order.")
+            return None  # No error, update successful
+        return f"{product.name} is not in this order."
 
     def remove_product(self, product):
         """Removes a product from the order and restores stock"""
