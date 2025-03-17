@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block header %}
+    <title>Manager Management</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+{% endblock header %}
+
+{% block main_content %}
+<div class="container ml-3">
+    <h2>Manager Management</h2>
+    <div class="mb-3">
+        <a href="{% url 'accounts:registration' %}" class="btn btn-primary">Create Account</a>
+        <a href="{% url 'shipment:add_product' %}" class="btn btn-secondary">Add Product</a>
+        <a href="{% url 'shipment:add_category' %}" class="btn btn-secondary">Add Category</a>
+    </div>
+    <h3>Employees</h3>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for employee in employees %}
+                <tr>
+                    <td>{{ employee.username }}</td>
+                    <td>{{ employee.email }}</td>
+                    <td>{{ employee.get_role_display }}</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal" data-employee-id="{{ employee.id }}">Delete</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <h3>Managers</h3>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for manager in managers %}
+                <tr>
+                    <td>{{ manager.username }}</td>
+                    <td>{{ manager.email }}</td>
+                    <td>{{ manager.get_role_display }}</td>
+                    <td>
+                        {% if manager.id != request.user.id %}
+                        <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteManagerModal" data-manager-id="{{ manager.id }}">Delete</button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal for Employees -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this employee?
+            </div>
+            <div class="modal-footer">
+                <form method="post" id="deleteForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="employee_id" id="employeeId">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" name="delete_employee" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal for Managers -->
+<div class="modal fade" id="deleteManagerModal" tabindex="-1" role="dialog" aria-labelledby="deleteManagerModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteManagerModalLabel">Confirm Deletion</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this manager?
+            </div>
+            <div class="modal-footer">
+                <form method="post" id="deleteManagerForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="manager_id" id="managerId">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" name="delete_manager" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    $('#deleteModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var employeeId = button.data('employee-id');
+        var modal = $(this);
+        modal.find('#employeeId').val(employeeId);
+    });
+    $('#deleteManagerModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var managerId = button.data('manager-id');
+        var modal = $(this);
+        modal.find('#managerId').val(managerId);
+    });
+</script>
+{% endblock main_content %}

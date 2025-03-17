@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load custom_filters %}
 
 {% block header %}
     <title>Register</title>
@@ -30,34 +31,32 @@
             <div class="card-body p-4">
                 <form method="post" novalidate>
                     {% csrf_token %}
-
                     {% if form.non_field_errors %}
                         <div class="alert alert-danger">
                             <strong>Error:</strong> Please correct the errors below.
                             {{ form.non_field_errors }}
                         </div>
                     {% endif %}
-
-                    {% for field in form %}
-                        <div class="mb-3">
-                            <label for="{{ field.id_for_label }}" class="form-label">
-                                {{ field.label }}
-                                {% if field.field.required %}
-                                    <span class="text-danger">*</span>
+                    <div class="form-row">
+                        {% for field in form %}
+                            <div class="form-group col-md-12">
+                                <label for="{{ field.id_for_label }}" class="form-label">
+                                    {{ field.label }}
+                                    {% if field.field.required %}
+                                        <span class="text-danger">*</span>
+                                    {% endif %}
+                                </label>
+                                {{ field|add_class:"form-control" }} <!--to applying a class into a feild i loaded {% load custom_filters %}-->
+                                {% if field.errors %}
+                                    <div class="text-danger">
+                                        {% for error in field.errors %}
+                                            <p class="mb-0">{{ error }}</p>
+                                        {% endfor %}
+                                    </div>
                                 {% endif %}
-                            </label>
-                            {{ field }}
-
-                            {% if field.errors %}
-                                <div class="text-danger">
-                                    {% for error in field.errors %}
-                                        <p class="mb-0">{{ error }}</p>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-
+                            </div>
+                        {% endfor %}
+                    </div>
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary btn-lg">Create</button>
                     </div>
