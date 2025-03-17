@@ -2,26 +2,38 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from .models import Order, OrderItem, Supermarket
 from .forms import OrderForm, OrderItemFormSet, SupermarketForm
 from inventory.models import Product, Category
+from django.core.exceptions import ValidationError
+
 
 @login_required
 def create_order(request):
     if request.method == 'POST':
         order_form = OrderForm(request.POST)
-        formset = OrderItemFormSet(request.POST)
 
         if order_form.is_valid():
             order = order_form.save(commit=False)
             order.created_by = request.user
+            order.status = 'Pending'
             order.save()
 
             formset = OrderItemFormSet(request.POST, instance=order)
 
             if formset.is_valid():
                 formset.save()
+                messages.success(request, "Order created successfully.")
                 return redirect('orders:order_list')
+            else:
+                order.delete()
+                print(f"Formset errors: {formset.errors}")
+                messages.error(request, "Please correct the errors in the order items.")
+        else:
+            formset = OrderItemFormSet(request.POST)
+            print(f"Order form errors: {order_form.errors}")
+            messages.error(request, "Please correct the errors in the order form.")
     else:
         order_form = OrderForm()
         formset = OrderItemFormSet()
@@ -41,7 +53,7 @@ def create_supermarket(request):
             if '_addanother' in request.POST:
                 return redirect('orders:create_supermarket')
             else:
-                return redirect('orders:supermarket_list')
+                return redirect('orders:create_order')
     else:
         form = SupermarketForm()
 

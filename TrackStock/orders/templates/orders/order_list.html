@@ -128,13 +128,20 @@
         </a>
     </div>
     <hr>
+    {% if messages %}
+    <div class="messages mb-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
 
     <div class="table-responsive">
         {% if orders %}
         <table class="table table-striped table-hover" id="orders-table">
-            <thead>
+            <thead class="thead-dark">
             <tr>
-                <th>#</th>
+                <th>ID</th>
                 <th>Supermarket</th>
                 <th>Date Created</th>
                 <th>Status</th>
@@ -180,7 +187,10 @@
             </tbody>
         </table>
         {% else %}
-        <p id="no-orders-message"><i class="fas fa-exclamation-circle"></i> No orders available.</p>
+        <div class="alert alert-info">
+            No orders found.
+            <a href="{% url 'orders:create_order' %}">Create your first order</a>
+        </div>
         {% endif %}
     </div>
 </div>

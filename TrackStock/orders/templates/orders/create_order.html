@@ -1,165 +1,261 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Create Order</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        h1 {
-            color: #333;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input, select, textarea {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        .order-items {
-            margin-top: 20px;
-            padding: 15px;
-            border: 1px solid #eee;
-            border-radius: 4px;
-        }
-        .order-item {
-            padding: 10px;
-            margin-bottom: 10px;
-            background-color: #f9f9f9;
-            border-radius: 4px;
-        }
-        .delete-row {
-            color: red;
-            cursor: pointer;
-        }
-        .add-row {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 14px;
-            margin: 10px 0;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-        .submit-btn {
-            background-color: #2196F3;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 20px 0 10px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-    </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelector('.add-row').addEventListener('click', function() {
-                const items = document.querySelector('#order-items');
-                const itemCount = document.querySelectorAll('.order-item').length;
-                const template = document.querySelector('.order-item').cloneNode(true);
+{% extends "base.html" %}
+{% load static %}
 
-                const inputs = template.querySelectorAll('select, input');
+{% block header %}
+<title>Create Order</title>
+{% endblock header %}
+
+{% block main_content %}
+<div class="content">
+    <h1 class="mb-4">Create New Order</h1>
+    <div class="mb-3">
+        <a href="{% url 'orders:order_list' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Order List
+        </a>
+    </div>
+
+    {% if messages %}
+    <div class="messages mb-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="form-group mb-4">
+                    <label for="{{ order_form.supermarket.id_for_label }}" class="form-label fw-bold">Supermarket:</label>
+                    {{ order_form.supermarket }}
+                    {% if order_form.supermarket.errors %}
+                    <div class="text-danger mt-2">
+                        {{ order_form.supermarket.errors }}
+                    </div>
+                    {% endif %}
+                    <small class="form-text text-muted mt-2">
+                        <a href="{% url 'orders:create_supermarket' %}" class="text-decoration-none">
+                            <i class="fas fa-plus-circle me-1 mt-3"></i>Add new supermarket
+                        </a>
+                    </small>
+                </div>
+
+                <h3 class="mt-4 mb-3">Order Items</h3>
+                {{ formset.management_form }}
+
+                <div id="order-items" class="mb-3">
+                    {% for form in formset %}
+                    <div class="order-item card mb-3" style="border-left: 4px solid var(--color-medium);">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-5 mb-3">
+                                    <label for="{{ form.product.id_for_label }}" class="form-label fw-bold">Product:</label>
+                                    {{ form.product }}
+                                    {% if form.product.errors %}
+                                    <div class="text-danger mt-2">
+                                        {{ form.product.errors }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-5 mb-3">
+                                    <label for="{{ form.quantity.id_for_label }}" class="form-label fw-bold">Quantity:</label>
+                                    {{ form.quantity }}
+                                    {% if form.quantity.errors %}
+                                    <div class="text-danger mt-2">
+                                        {{ form.quantity.errors }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-2 d-flex align-items-end mb-3">
+                                    {% if formset.can_delete %}
+                                    <button type="button" class="btn btn-outline-danger delete-row w-100">
+                                        <i class="fas fa-trash-alt me-2"></i>Delete
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <button type="button" class="btn add-row mb-4">
+                    <i class="fas fa-plus me-2"></i>Add Item
+                </button>
+
+                <div class="mt-4 d-flex">
+                    <button type="submit" class="btn submit-btn me-2">
+                        <i class="fas fa-check me-2"></i>Create Order
+                    </button>
+                    <a href="{% url 'orders:order_list' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    #order_form select,
+    #order_form input,
+    .order-item select,
+    .order-item input {
+        display: block;
+        width: 100%;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #212529;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    #order_form select:focus,
+    #order_form input:focus,
+    .order-item select:focus,
+    .order-item input:focus {
+        border-color: var(--color-medium);
+        outline: 0;
+        box-shadow: 0 0 0 0.25rem rgba(122, 178, 211, 0.25);
+    }
+
+    .add-row {
+        background-color: var(--color-medium);
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        margin: 10px 0;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+    }
+    
+    .add-row:hover {
+        background-color: var(--color-dark);
+    }
+    
+    .submit-btn {
+        background-color: var(--color-dark);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+    }
+    
+    .submit-btn:hover {
+        background-color: var(--color-medium);
+    }
+    
+    .delete-row {
+        transition: all 0.3s;
+    }
+    
+    .order-item {
+        transition: all 0.3s;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addButton = document.querySelector('.add-row');
+        const orderItemsContainer = document.querySelector('#order-items');
+        const totalForms = document.getElementById('id_form-TOTAL_FORMS') || document.getElementById('id_items-TOTAL_FORMS');
+
+        if (addButton && orderItemsContainer && totalForms) {
+            addButton.addEventListener('click', function() {
+                const formCount = parseInt(totalForms.value);
+                const template = document.querySelector('.order-item');
+                
+                if (!template) {
+                    console.error("No order item template found!");
+                    return;
+                }
+                
+                const newOrderItem = template.cloneNode(true);
+                
+                const inputs = newOrderItem.querySelectorAll('select, input');
                 inputs.forEach(input => {
                     const name = input.getAttribute('name');
                     const id = input.getAttribute('id');
-
+                    
                     if (name) {
-                        input.setAttribute('name', name.replace(/\d+/, itemCount));
+                        input.setAttribute('name', name.replace(/\d+/, formCount));
                     }
                     if (id) {
-                        input.setAttribute('id', id.replace(/\d+/, itemCount));
+                        input.setAttribute('id', id.replace(/\d+/, formCount));
                     }
-
-                    input.value = '';
+                    
+                    if (input.type !== 'hidden') {
+                        input.value = '';
+                    }
                 });
-
-                const deleteBtn = template.querySelector('.delete-row');
+                
+                newOrderItem.querySelectorAll('.text-danger').forEach(div => div.remove());
+                
+                const deleteBtn = newOrderItem.querySelector('.delete-row');
                 if (deleteBtn) {
                     deleteBtn.addEventListener('click', function() {
-                        template.remove();
+                        if (document.querySelectorAll('.order-item').length > 1) {
+                            newOrderItem.remove();
+                            updateFormIndices();
+                        }
                     });
                 }
-
-                items.appendChild(template);
+                
+                orderItemsContainer.appendChild(newOrderItem);
+                totalForms.value = formCount + 1;
             });
+        }
 
-            document.querySelectorAll('.delete-row').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    if (document.querySelectorAll('.order-item').length > 1) {
-                        this.closest('.order-item').remove();
+        document.querySelectorAll('.delete-row').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (document.querySelectorAll('.order-item').length > 1) {
+                    this.closest('.order-item').remove();
+                    updateFormIndices();
+                }
+            });
+        });
+
+        function updateFormIndices() {
+            const items = document.querySelectorAll('.order-item');
+            items.forEach((item, index) => {
+                const inputs = item.querySelectorAll('select, input');
+                inputs.forEach(input => {
+                    const name = input.getAttribute('name');
+                    const id = input.getAttribute('id');
+                    
+                    if (name) {
+                        input.setAttribute('name', name.replace(/\d+/, index));
+                    }
+                    if (id) {
+                        input.setAttribute('id', id.replace(/\d+/, index));
                     }
                 });
             });
-        });
-    </script>
-</head>
-<body>
-<div class="container">
-    <h1>Create New Order</h1>
-
-    <form method="post">
-        {% csrf_token %}
-
-        <div class="form-group">
-            <label for="{{ order_form.supermarket.id_for_label }}">Supermarket:</label>
-            {{ order_form.supermarket }}
-        </div>
-
-        <h2>Order Items</h2>
-        {{ formset.management_form }}
-
-        <div id="order-items">
-            {% for form in formset %}
-            <div class="order-item">
-                <div class="form-group">
-                    <label for="{{ form.product.id_for_label }}">Product:</label>
-                    {{ form.product }}
-                </div>
-
-                <div class="form-group">
-                    <label for="{{ form.quantity.id_for_label }}">Quantity:</label>
-                    {{ form.quantity }}
-                </div>
-
-                {% if formset.can_delete %}
-                <div class="form-group">
-                    <span class="delete-row">Delete</span>
-                </div>
-                {% endif %}
-            </div>
-            {% endfor %}
-        </div>
-
-        <button type="button" class="add-row">Add Item</button>
-
-        <div>
-            <button type="submit" class="submit-btn">Create Order</button>
-        </div>
-    </form>
-</div>
-</body>
-</html>
+            
+            if (totalForms) {
+                totalForms.value = items.length;
+            }
+        }
+    });
+</script>
+{% endblock main_content %}
