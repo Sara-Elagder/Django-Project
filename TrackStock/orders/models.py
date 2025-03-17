@@ -93,4 +93,3 @@ class OrderItem(models.Model):
         self.product.quantity += self.quantity  # Restore stock
         self.product.save()
         super().delete(*args, **kwargs)
-
