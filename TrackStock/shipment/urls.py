@@ -9,8 +9,8 @@ app_name = 'shipment'
 
 urlpatterns = [
     path('', shipment_list, name='shipment_list'),
-    path('create/', shipment_create, name='shipment_create'),
-    path('<int:shipment_id>/', shipment_detail, name='shipment_detail'),
+    path('create/', shipment_create, name='shipment_create'), #responsive
+    path('<int:shipment_id>/', shipment_detail, name='shipment_detail'), #responsive
     path('<int:shipment_id>/add-product/', add_product_to_shipment, name='add_product_to_shipment'),
     path('<int:shipment_id>/finish/', finish_shipment, name='finish_shipment'), 
     path('update-shipment-status/<int:shipment_id>/', update_shipment_status, name='update_shipment_status'),

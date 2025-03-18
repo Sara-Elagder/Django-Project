@@ -123,9 +123,9 @@
                         </button>
                     <form method="post" action="{% url 'orders:delete_product' order.id item.id %}" class="d-inline delete-form">
                         {% csrf_token %}
-                        <button type="button" class="btn btn-sm btn-outline-danger delete-btn ms-2" data-item="{{ item.id }}">
+                        <!-- <button type="button" class="btn btn-sm btn-outline-danger delete-btn ms-2" data-item="{{ item.id }}">
                             <i class="fas fa-trash-alt"></i> Delete
-                        </button>
+                        </button> -->
                     </form>
                 </td>
                 {% endif %}
@@ -237,26 +237,26 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 
-    document.querySelectorAll('.delete-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const form = this.closest('form');
-            const itemId = this.getAttribute('data-item');
+    // document.querySelectorAll('.delete-btn').forEach(button => {
+    //     button.addEventListener('click', function() {
+    //         const form = this.closest('form');
+    //         const itemId = this.getAttribute('data-item');
 
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "This product will be removed from the order!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
-            });
-        });
-    });
+    //         Swal.fire({
+    //             title: 'Are you sure?',
+    //             text: "This product will be removed from the order!",
+    //             icon: 'warning',
+    //             showCancelButton: true,
+    //             confirmButtonColor: '#d33',
+    //             cancelButtonColor: '#3085d6',
+    //             confirmButtonText: 'Yes, delete it!'
+    //         }).then((result) => {
+    //             if (result.isConfirmed) {
+    //                 form.submit();
+    //             }
+    //         });
+    //     });
+    // });
 
         function filterProducts() {
         let categoryFilter = document.getElementById("category").value;

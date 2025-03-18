@@ -1,0 +1,12 @@
+#finaly requirnments 
+responsive for --> shipments -->sara  
+remove add product and add category from employee  url --> amir 
+replace alter -> bootstrap alter --> sara 
+shipment / orders  edits only for managers -> nouran 
+#remove delete from each manager and employee  --> done 
+handle 404 error page --> sara 
+manager only add super market  --> in orders
+super markets list --> amir 
+filter -- >  nagham (orders/shipments)
+search --> nouran in inventory 
+main Dashboard --> sara / nouran /nagham 

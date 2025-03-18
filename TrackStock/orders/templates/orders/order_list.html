@@ -97,23 +97,23 @@
 </style>
 
 <script>
-    function confirmDelete(event, form) {
-        event.preventDefault(); // Prevent form submission
+    // function confirmDelete(event, form) {
+    //     event.preventDefault(); // Prevent form submission
 
-        Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to undo this action!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Yes, delete it!",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                form.submit();
-            }
-        });
-    }
+    //     Swal.fire({
+    //         title: "Are you sure?",
+    //         text: "You won't be able to undo this action!",
+    //         icon: "warning",
+    //         showCancelButton: true,
+    //         confirmButtonColor: "#d33",
+    //         cancelButtonColor: "#3085d6",
+    //         confirmButtonText: "Yes, delete it!",
+    //     }).then((result) => {
+    //         if (result.isConfirmed) {
+    //             form.submit();
+    //         }
+    //     });
+    // }
 </script>
 {% endblock header %}
 
@@ -177,9 +177,9 @@
                               class="d-inline"
                               onsubmit="confirmDelete(event, this);">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                            <!-- <button type="submit" class="btn btn-sm btn-outline-danger">
                                 <i class="fas fa-trash-alt"></i> Delete
-                            </button>
+                            </button> -->
                         </form>
                         {% endif %}
                     </td>
