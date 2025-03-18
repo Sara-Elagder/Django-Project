@@ -2,6 +2,6 @@ TrackStock/db.sqlite3
 venv/
 .venv/
 __pycache__/
-db.sqlite3
+TrackStock/db.sqlite3
 images.idea/
 .idea/
