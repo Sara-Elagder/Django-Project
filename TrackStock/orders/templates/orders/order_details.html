@@ -65,7 +65,7 @@
     <hr>
 
     <div id="order-info">
-        <p><strong><i class="fas fa-shopping-cart"></i> Supermarket:</strong> {{ order.supermarket.name }}</p>
+        <p><strong><i class="fas fa-store"></i> Supermarket:</strong> {{ order.supermarket.name }}</p>
         <p><strong><i class="fas fa-user"></i> Created By:</strong> {{ order.created_by.username }}</p>
         <p><strong><i class="fas fa-calendar-alt"></i> Date Created:</strong> {{ order.date_created|date:"Y-m-d H:i" }}</p>
         <p><strong><i class="fas fa-info-circle"></i> Status:</strong> {{ order.status }}</p>
@@ -139,12 +139,12 @@
     </table>
 
     {% if order.status != "Loaded" and order.status != "Confirmed" %}
-          <h4 class="mt-4"><i class="fas fa-plus-circle"></i> Add Product</h4>
+          <h4 class="mt-4"><i class="fas fa-cart-plus"></i> Add Product</h4>
  <form method="post" action="{% url 'orders:add_product_to_order' order.id %}">
     {% csrf_token %}
     <div class="row">
         <div class="col-md-4">
-            <label for="category"><i class="fas fa-bag-shopping"></i> Select Category</label>
+            <label for="category"><i class="fas fa-truck-ramp-box"></i> Select Category</label>
             <select id="category" class="form-select" onchange="filterProducts()">
                 <option value="" selected>Select a Category</option>
                 {% for category in categories %}
@@ -154,7 +154,7 @@
         </div>
 
         <div class="col-md-4">
-            <label for="product"><i class="fas fa-box"></i> Select Product</label>
+            <label for="product"><i class="fas fa-bag-shopping"></i> Select Product</label>
             <select name="product" id="product" class="form-control" required>
                 <option value="" selected disabled>Select a Product</option>
                 {% for product in products %}
