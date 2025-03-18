@@ -98,7 +98,7 @@
 
 <script>
     function confirmDelete(event, form) {
-        event.preventDefault(); // Prevent form submission
+        event.preventDefault();
 
         Swal.fire({
             title: "Are you sure?",
@@ -122,10 +122,17 @@
     <h2 class="mb-3 text-center"><i class="fas fa-box"></i> Orders List</h2>
 
 
-      <div class="text-end mb-3">
-        <a href="{% url 'orders:create_order' %}" class="btn btn-success">
-            <i class="fas fa-plus-circle"></i> Create New Order
-        </a>
+        <div class="d-flex justify-content-between mb-2">
+            <a href="{% url 'orders:create_supermarket' %}" class="btn btn-primary me-3">
+                <i class="fas fa-shop"></i> Add New Supermarket
+            </a>
+            <a href="{% url 'orders:supermarket_list' %}" class="btn btn-outline-secondary me-auto">
+                <i class="fas fa-list"></i> Supermarket List
+            </a>
+            <a href="{% url 'orders:create_order' %}" class="btn btn-success ms-2">
+                <i class="fas fa-shopping-cart"></i> Create New Order
+            </a>
+        </div>
     </div>
  <hr>
 

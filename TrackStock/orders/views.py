@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.urls import reverse
+from django.db import transaction
+from django.db.models import Count
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from .models import Order, OrderItem, Supermarket
@@ -69,8 +71,34 @@ def order_list(request):
 
 @login_required
 def supermarket_list(request):
-    supermarkets = Supermarket.objects.all()
-    return render(request, 'orders/supermarket_list.html', {'supermarkets': supermarkets})
+    supermarkets = Supermarket.objects.annotate(order_count=Count("order"))
+    return render(request, "orders/supermarket_list.html", {"supermarkets": supermarkets})
+
+
+@login_required
+def delete_supermarket(request, supermarket_id):
+    supermarket = get_object_or_404(Supermarket, id=supermarket_id)
+
+    with transaction.atomic():
+
+        orders = Order.objects.filter(supermarket=supermarket)
+
+        for order in orders:
+            if order.status in ["Pending", "Loaded"]:
+
+                for item in order.items.all():
+                    item.product.quantity += item.quantity
+                    item.product.save()
+
+        orders.delete()
+
+        supermarket.delete()
+
+        messages.success(request, "Supermarket and related orders have been deleted.")
+
+    return redirect("orders:supermarket_list")
+
+
 
 @login_required
 def order_details(request, order_id):
@@ -94,8 +122,7 @@ def order_delete(request, order_id):
 
     if request.method == "POST":
 
-        # Restore product stock before deleting order
-        for item in order.items.all():  # order.items refers to related OrderItem objects
+        for item in order.items.all():
             item.product.quantity += item.quantity
             item.product.save()
 
@@ -125,8 +152,6 @@ def delete_product(request, order_id, item_id):
     if request.method == "POST":
         product = item.product
 
-
-        # Remove the item from the order
         item.delete()
 
         messages.success(request, f"{product.name} was removed from the order, and stock was restored.")
