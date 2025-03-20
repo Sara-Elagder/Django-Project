@@ -144,7 +144,7 @@
     {% csrf_token %}
     <div class="row">
         <div class="col-md-4">
-            <label for="category"><i class="fas fa-truck-ramp-box"></i> Select Category</label>
+            <label for="category"><i class="fas fa-shopping-basket"></i> Select Category</label>
             <select id="category" class="form-select" onchange="filterProducts()">
                 <option value="" selected>Select a Category</option>
                 {% for category in categories %}
