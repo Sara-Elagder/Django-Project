@@ -8,11 +8,17 @@ from django.contrib import messages
 from .forms import ShipmentItemForm
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
+from .filters import ShipmentFilter
 
 @login_required
 def shipment_list(request):
     shipments = Shipment.objects.all()
-    return render(request, 'shipment/shipment_list.html', {'shipments': shipments})
+    shipment_filter = ShipmentFilter(request.GET, queryset=shipments)
+
+    return render(request, 'shipment/shipment_list.html', {
+        'filter': shipment_filter,
+        'shipments': shipment_filter.qs
+    })
 
 @login_required
 def shipment_create(request):

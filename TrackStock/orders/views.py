@@ -9,6 +9,7 @@ from .models import Order, OrderItem, Supermarket
 from .forms import OrderForm, OrderItemFormSet, SupermarketForm
 from inventory.models import Product, Category
 from django.core.exceptions import ValidationError
+from .filters import OrderFilter
 
 
 @login_required
@@ -64,10 +65,17 @@ def create_supermarket(request):
     }
     return render(request, 'orders/create_supermarket.html', context)
 
+
 @login_required
 def order_list(request):
     orders = Order.objects.all()
-    return render(request, 'orders/order_list.html', {'orders': orders})
+    order_filter = OrderFilter(request.GET, queryset=orders)
+
+    context = {
+        'filter': order_filter,
+        'orders': order_filter.qs
+    }
+    return render(request, 'orders/order_list.html', context)
 
 @login_required
 def supermarket_list(request):
