@@ -4,9 +4,10 @@ remove add product and add category from employee  url --> amir
 replace alter -> bootstrap alter --> sara 
 shipment / orders  edits only for managers -> nouran 
 #remove delete from each manager and employee  --> done 
-handle 404 error page --> sara 
+handle 404 error page --> hams (settings)
+handel login error --> hams
 manager only add super market  --> in orders
-super markets list --> amir 
-filter -- >  nagham (orders/shipments)
+super markets list --> done
+filter -- >  nagham (orders/shipments)--> done
 search --> nouran in inventory 
 main Dashboard --> sara / nouran /nagham 

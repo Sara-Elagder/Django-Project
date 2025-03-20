@@ -28,7 +28,7 @@ class LoginView(FormView):
         if user.role == 'manager':
             return redirect('inventory:product_list')
         elif user.role == 'employee':
-            return redirect('shipment:shipment_list')
+            return redirect('inventory:product_list')
         return super().form_valid(form)
 
 class LogoutView(View):
@@ -56,3 +56,8 @@ class ManagerManagementView(UserPassesTestMixin, View):
             manager = get_object_or_404(User, id=manager_id)
             manager.delete()
         return redirect('accounts:manager_management')
+    
+
+class Custom404View(View):
+    def get(self, request, exception=None):
+        return render(request, '404.html', status=404)
