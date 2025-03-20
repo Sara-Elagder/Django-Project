@@ -11,6 +11,23 @@
         margin-left: 100px;
         margin-top: 70px;
     }
+    .filter-card {
+        margin-bottom: 20px;
+    }
+    .filter-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        align-items: flex-end;
+    }
+    .form-group {
+        flex: 1;
+        min-width: 200px;
+    }
+    .filter-buttons {
+        display: flex;
+        gap: 10px;
+    }
 </style>
 {% endblock header %}
 
@@ -23,66 +40,82 @@
         </a>
     </div>
 
+    <div class="card shadow-sm filter-card">
+        <div class="card-header bg-light">
+            <h5 class="mb-0"><i class="bi bi-funnel"></i> Filter Shipments</h5>
+        </div>
+        <div class="card-body">
+            <form method="get" class="filter-form">
+                <div class="form-group">
+                    <label for="id_factory_name">Factory Name</label>
+                    {{ filter.form.factory_name }}
+                </div>
+                <div class="form-group">
+                    <label for="id_status">Status</label>
+                    {{ filter.form.status }}
+                </div>
+                <div class="form-group">
+                    <label for="id_date_received_min">From Date</label>
+                    {{ filter.form.date_received_min }}
+                </div>
+                <div class="form-group">
+                    <label for="id_date_received_max">To Date</label>
+                    {{ filter.form.date_received_max }}
+                </div>
+                <div class="filter-buttons">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Apply Filters
+                    </button>
+                    <a href="{% url 'shipment:shipment_list' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle"></i> Clear
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="card shadow-sm"  >
         <div class="card-body p-4">
             <table class="table table-hover align-middle">
                 <thead class="table-dark">
-                    <tr>
-                        <th>#</th>
-                        <th>Factory Name</th>
-                        <th>Date Received</th>
-                        <th>Status</th>
-                        <th class="text-center">Actions</th>
-                    </tr>
+                <tr>
+                    <th>#</th>
+                    <th>Factory Name</th>
+                    <th>Date Received</th>
+                    <th>Status</th>
+                    <th class="text-center">Actions</th>
+                </tr>
                 </thead>
                 <tbody>
-                    {% for shipment in shipments %}
-                    <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td class="fw-semibold">{{ shipment.factory_name }}</td>
-                        <td>{{ shipment.date_received|date:"d M Y, H:i A" }}</td>
-                        <td>
-                            {% if shipment.status == "Received" %}
-                                <span class="badge bg-success">Received</span>
-                            {% elif shipment.status == "Loaded" %}
-                                <span class="badge bg-primary">Loaded</span>
-                            {% else %}
-                                <span class="badge bg-warning text-dark">Pending</span>
-                            {% endif %}
-                        </td>
-                        
-                        
-                         <td class="text-center">
-                            <a href="{% url 'shipment:shipment_detail' shipment.id %}" class="btn btn-outline-primary btn-sm me-2">
-                                <i class="bi bi-eye"></i> View
-                            </a>
-                         
-                            <!-- {% if shipment.status == "Pending" %}
-                                <form method="post" action="{% url 'shipment:shipment_delete' shipment.id %}" 
-                                      class="d-inline"
-                                      onsubmit="return confirmDelete();">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-outline-danger btn-sm">
-                                        <i class="bi bi-trash"></i> Delete
-                                    </button>
-                                </form>
-                            {% else %}
-                                <button type="button" class="btn btn-sm btn-outline-secondary disabled-btn" disabled>
-                                    <i class="bi bi-trash"></i> Delete
-                                </button>
-                            {% endif %}  -->
-                        </td>
-                        
-                        
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="5" class="text-center py-4">
-                            <i class="bi bi-inbox-fill fs-1 text-muted"></i>
-                            <p class="mt-2 text-muted">No shipments available.</p>
-                        </td>
-                    </tr>
-                    {% endfor %}
+                {% for shipment in shipments %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td class="fw-semibold">{{ shipment.factory_name }}</td>
+                    <td>{{ shipment.date_received|date:"d M Y, H:i A" }}</td>
+                    <td>
+                        {% if shipment.status == "Received" %}
+                        <span class="badge bg-success">Received</span>
+                        {% elif shipment.status == "Loaded" %}
+                        <span class="badge bg-primary">Loaded</span>
+                        {% else %}
+                        <span class="badge bg-warning text-dark">Pending</span>
+                        {% endif %}
+                    </td>
+
+                    <td class="text-center">
+                        <a href="{% url 'shipment:shipment_detail' shipment.id %}" class="btn btn-outline-primary btn-sm me-2">
+                            <i class="bi bi-eye"></i> View
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center py-4">
+                        <i class="bi bi-inbox-fill fs-1 text-muted"></i>
+                        <p class="mt-2 text-muted">No shipments available.</p>
+                    </td>
+                </tr>
+                {% endfor %}
                 </tbody>
             </table>
         </div>
