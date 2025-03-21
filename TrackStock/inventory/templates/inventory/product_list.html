@@ -2,16 +2,18 @@
 {%load static %}
 {%block header %}
 <title>Inventory</title>
+ 
 {% endblock header %}
 {% block main_content %}
 
 
-<div class=" m-5" id="product_container">
+<div class=" m-3" id="product_container">
     <h2>Inventory</h2>
   
   <div class="mb-3">
     <form method="GET" action="">
-      <select name="category" class="form-select custom-category-select" onchange="this.form.submit()">
+      <input type="hidden" name="search" value="{{ request.GET.search }}">
+      <select name="category" class="form-select custom-category-select" onchange="this.form.submit() " style="width: auto;">
         <option value="">All Categories</option>
         {% for category in categories %}
         <option value="{{ category.id }}" {% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>
@@ -75,17 +77,17 @@
       <ul class="pagination justify-content-center">
         {% if products.has_previous %}
           <li class="page-item">
-            <a class="page-link" href="?category={{ request.GET.category }}&page=1">First</a>
+            <a class="page-link" href="?category={{ request.GET.category }}&search={{ request.GET.search }}&page=1">First</a>
           </li>
           <li class="page-item">
-            <a class="page-link" href="?category={{ request.GET.category }}&page={{ products.previous_page_number }}">Previous</a>
+            <a class="page-link" href="?category={{ request.GET.category }}&search={{ request.GET.search }}&page={{ products.previous_page_number }}">Previous</a>
           </li>
         {% endif %}
   
         {% for num in products.paginator.page_range %}
           {% if num == 1 or num == products.paginator.num_pages or num == products.number or num == products.number|add:'-1' or num == products.number|add:'1' or num == products.number|add:'-2' or num == products.number|add:'2' %}
             <li class="page-item {% if num == products.number %}active{% endif %}">
-              <a class="page-link" href="?category={{ request.GET.category }}&page={{ num }}">{{ num }}</a>
+              <a class="page-link" href="?category={{ request.GET.category }}&search={{ request.GET.search }}&page={{ num }}">{{ num }}</a>
             </li>
           {% elif num == products.number|add:'-3' or num == products.number|add:'3' %}
             <li class="page-item disabled">
@@ -96,10 +98,10 @@
   
         {% if products.has_next %}
           <li class="page-item">
-            <a class="page-link" href="?category={{ request.GET.category }}&page={{ products.next_page_number }}">Next</a>
+            <a class="page-link" href="?category={{ request.GET.category }}&search={{ request.GET.search }}&page={{ products.next_page_number }}">Next</a>
           </li>
           <li class="page-item">
-            <a class="page-link" href="?category={{ request.GET.category }}&page={{ products.paginator.num_pages }}">Last</a>
+            <a class="page-link" href="?category={{ request.GET.category }}&search={{ request.GET.search }}&page={{ products.paginator.num_pages }}">Last</a>
           </li>
         {% endif %}
       </ul>
