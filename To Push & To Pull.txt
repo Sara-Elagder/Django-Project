@@ -17,3 +17,17 @@ git pull origin branch_name
 #Reapply your saved changes:
 git stash pop
 
+
+#To Push from your branch to main 
+#from Django-Project dir
+git status
+git add . 
+git commit -m "Enter Your commit here"
+git push
+git checkout main
+git pull origin main.rebase false
+git pull origin main
+git checkout your branch_name
+git merge main
+from gui commit and push again
+make pull request from github

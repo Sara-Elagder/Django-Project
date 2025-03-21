@@ -205,7 +205,7 @@ body {
     width: 200px;
     height: 100vh;
     background: linear-gradient(to bottom right, #4f72b8, #42474d);
-    color: white;
+    color: white; 
     position: fixed;
     top: 0;
     left: 0;
