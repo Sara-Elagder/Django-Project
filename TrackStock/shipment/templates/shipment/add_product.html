@@ -3,19 +3,24 @@
 {% block header %}
     <title>Add Product</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
+        
         .form-container {
             width:100%;
             max-width: 1000px;
-            margin: 0 auto;
-            padding: 30px;
+            padding: 20px;
             border: 1px solid #ddd;
             border-radius: 8px;
             background: #f9f9f9;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin:  20px auto; /*center*/
+  
+        }
+        @media (max-width: 768px) {
+            .form-container {
+                max-width: 1000px;
+                margin-left:10px ;
+
+            }
         }
         .form-container h1 {
             text-align: center;
@@ -62,16 +67,11 @@
             background-color:rgb(32, 17, 102);
         }
 
-        .parent {
-            width: 100%;
-            display: flex;
-            margin-left: 100px;
-            justify-content: center;
-        }
+    
     </style>
 {% endblock header %}
 {% block main_content %}
-<div class="parent">
+<div  >
 <div class="form-container">
     <h1>Add Product</h1>
     <form method="post" enctype="multipart/form-data" id="productForm">

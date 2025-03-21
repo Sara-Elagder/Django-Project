@@ -1,10 +1,25 @@
 {% load static %}
-<div class="sidebar" style="height: 100vh; overflow-y: hidden;">
-    <a href="#"><i class="bi bi-speedometer2"></i> <span>Dashboard</span></a>
-    <a href="{% url 'inventory:product_list' %}"><i class="bi bi-box-seam"></i> <span>Inventory</span></a>
-    <a href="{% url 'shipment:shipment_list'%}"><i class="bi bi-truck"></i> <span>Shipment</span></a>
-    <a href="{% url 'orders:order_list' %}"><i class="bi bi-card-checklist"></i> <span>Orders</span></a>
+<div class="sidebar">
+    <a href="#" class="{% if request.path == '/dashboard/' %}active{% endif %}">
+        <i class="bi bi-grid-1x2-fill"></i>
+        <span>Dashboard</span>
+    </a>
+    <a href="{% url 'inventory:product_list' %}" class="{% if 'inventory' in request.path %}active{% endif %}">
+        <i class="bi bi-box-seam-fill"></i>
+        <span>Inventory</span>
+    </a>
+    <a href="{% url 'shipment:shipment_list' %}" class="{% if 'shipment' in request.path %}active{% endif %}">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span>Shipment</span>
+    </a>
+    <a href="{% url 'orders:order_list' %}" class="{% if 'orders' in request.path %}active{% endif %}">
+        <i class="bi bi-clipboard2-check-fill"></i>
+        <span>Orders</span>
+    </a>
     {% if user.is_authenticated and user.role == 'manager' %}
-        <a href="{% url 'accounts:manager_management' %}"><i class="bi bi-people"></i> <span>Manager Management</span></a>
+    <a href="{% url 'accounts:manager_management' %}" class="{% if 'manager' in request.path %}active{% endif %}">
+        <i class="bi bi-people-fill"></i>
+        <span>Manager Management</span>
+    </a>
     {% endif %}
 </div>
