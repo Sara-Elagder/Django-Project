@@ -122,22 +122,22 @@ def order_details(request, order_id):
 @login_required
 def order_delete(request, order_id):
 
-    order = get_object_or_404(Order, id=order_id)
+   order = get_object_or_404(Order, id=order_id)
 
-    if order.status == "Confirmed":
-        messages.error(request, "You cannot delete the order as it has been already confirmed.")
-        return redirect("orders:order_list")
+   if order.status == "Confirmed":
+       messages.error(request, "You cannot delete the order as it has been already confirmed.")
+       return redirect("orders:order_list")
 
-    if request.method == "POST":
+   if request.method == "POST":
 
-        for item in order.items.all():
-            item.product.quantity += item.quantity
-            item.product.save()
+       for item in order.items.all():
+           item.product.quantity += item.quantity
+           item.product.save()
 
-        order.delete()
-        messages.success(request, "Order deleted successfully, and product stock has been restored.")
+       order.delete()
+       messages.success(request, "Order deleted successfully, and product stock has been restored.")
 
-    return redirect(reverse('orders:order_list'))
+   return redirect(reverse('orders:order_list'))
 
 
 
@@ -236,7 +236,7 @@ def edit_product_in_order(request, order_id, product_id):
 def change_order_status(request, order_id):
     order = get_object_or_404(Order, id=order_id)
 
-    # 🚨 Prevent further changes if the order is already confirmed
+    # Prevent further changes if the order is already confirmed
     if order.status == "Confirmed":
         messages.error(request, "You cannot change the status of a confirmed order.")
         return redirect("orders:order_details", order_id=order.id)

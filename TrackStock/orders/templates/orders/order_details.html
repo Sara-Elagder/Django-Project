@@ -123,9 +123,9 @@
                         </button>
                     <form method="post" action="{% url 'orders:delete_product' order.id item.id %}" class="d-inline delete-form">
                         {% csrf_token %}
-                        <!-- <button type="button" class="btn btn-sm btn-outline-danger delete-btn ms-2" data-item="{{ item.id }}">
+                        <button type="button" class="btn btn-sm btn-outline-danger delete-btn ms-2" data-item="{{ item.id }}">
                             <i class="fas fa-trash-alt"></i> Delete
-                        </button> -->
+                        </button> 
                     </form>
                 </td>
                 {% endif %}
