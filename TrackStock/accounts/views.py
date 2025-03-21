@@ -5,8 +5,10 @@ from django.contrib.auth import login, logout
 from django.views.generic import FormView, CreateView, View
 from django.contrib.auth.mixins import UserPassesTestMixin
 from accounts.forms import CustomUserCreationForm
+from django.views.decorators.cache import never_cache
 from .models import User
 from django.views.generic.edit import FormView
+from django.utils.decorators import method_decorator
 
 class RegisterView(UserPassesTestMixin, CreateView):
     model = User
@@ -19,17 +21,19 @@ class RegisterView(UserPassesTestMixin, CreateView):
         return redirect('accounts:login')
 
 class LoginView(FormView):
-    template_name = 'forms/login_form.html'
+    template_name = 'forms/login_form.html'  
     form_class = AuthenticationForm
-    success_url = reverse_lazy('inventory:product_list')
+    success_url = reverse_lazy('inventory:product_list')  
+
+    @method_decorator(never_cache)  
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:  
+            return redirect(self.success_url)  
+        return super().dispatch(request, *args, **kwargs)
+
     def form_valid(self, form):
-        user = form.get_user()
-        login(self.request, user)
-        if user.role == 'manager':
-            return redirect('inventory:product_list')
-        elif user.role == 'employee':
-            return redirect('inventory:product_list')
-        return super().form_valid(form)
+        login(self.request, form.get_user())
+        return redirect(self.success_url)
 
 class LogoutView(View):
     def get(self, request, *args, **kwargs):
