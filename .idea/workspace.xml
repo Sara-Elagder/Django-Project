@@ -5,14 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b8a8b697-d074-4c4f-a4a8-ecef3907018d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/TrackStock/orders/templates/orders/supermarket_list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TrackStock/shipment/decorators.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TrackStock/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TrackStock/orders/templates/orders/create_supermarket.html" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/orders/templates/orders/create_supermarket.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrackStock/orders/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/orders/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TrackStock/orders/templates/orders/order_details.html" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/orders/templates/orders/order_details.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TrackStock/orders/templates/orders/order_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/orders/templates/orders/order_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrackStock/orders/templates/orders/supermarket_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/orders/templates/orders/supermarket_list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TrackStock/orders/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/orders/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TrackStock/orders/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/orders/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrackStock/shipment/templates/shipment/add_product_to_shipment.html" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/shipment/templates/shipment/add_product_to_shipment.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrackStock/shipment/templates/shipment/shipment_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/shipment/templates/shipment/shipment_detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrackStock/shipment/templates/shipment/shipment_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/shipment/templates/shipment/shipment_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrackStock/shipment/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrackStock/shipment/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,10 +70,14 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;com.codeium.enabled&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;amir&quot;
+    &quot;git-widget-placeholder&quot;: &quot;amir&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/amir/Documents/Django/FinalProjectDjango/Django-Project/TrackStock/shipment&quot;
   }
 }</component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/TrackStock/shipment" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/TrackStock/orders/templates/orders" />
@@ -78,7 +86,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-14705d77f0bb-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.25659.43" />
+        <option value="bundled-python-sdk-4f4e415b4190-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.26053.29" />
       </set>
     </attachedChunks>
   </component>

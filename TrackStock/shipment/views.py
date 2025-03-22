@@ -9,6 +9,7 @@ from .forms import ShipmentItemForm
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
 from .filters import ShipmentFilter
+from .decorators import order_status_required, manager_required
 
 @login_required
 def shipment_list(request):
@@ -43,6 +44,7 @@ def shipment_detail(request, shipment_id):
 
 
 @login_required
+@order_status_required(status="Pending")
 def add_product_to_shipment(request, shipment_id):
     shipment = get_object_or_404(Shipment, id=shipment_id)
     products = Product.objects.all()  
@@ -77,6 +79,7 @@ def add_product_to_shipment(request, shipment_id):
         "categories": categories
     })
 @login_required
+@manager_required
 def finish_shipment(request, shipment_id):
     shipment = get_object_or_404(Shipment, id=shipment_id)
     if shipment.status == "Pending":
@@ -95,6 +98,7 @@ def finish_shipment(request, shipment_id):
 
 
 @login_required
+@order_status_required(status="Pending")
 def update_shipment_status(request, shipment_id):
     shipment = get_object_or_404(Shipment, id=shipment_id)
 
@@ -113,6 +117,7 @@ def update_shipment_status(request, shipment_id):
     return redirect('shipment:shipment_detail', shipment_id=shipment.id)
 
 @login_required
+@order_status_required(status="Pending")
 def shipment_delete(request, shipment_id):
     shipment = get_object_or_404(Shipment, id=shipment_id)
     shipment.delete()
@@ -120,6 +125,7 @@ def shipment_delete(request, shipment_id):
 
 
 @login_required
+@order_status_required(status="Pending")
 def edit_product(request, shipment_id, item_id):
     item = get_object_or_404(ShipmentItem, id=item_id, shipment_id=shipment_id)
 
@@ -139,6 +145,7 @@ def edit_product(request, shipment_id, item_id):
 
 
 @login_required
+@order_status_required(status="Pending")
 def delete_product(request, shipment_id, item_id):
     item = get_object_or_404(ShipmentItem, id=item_id, shipment_id=shipment_id)
     if request.method == "POST":
@@ -147,6 +154,7 @@ def delete_product(request, shipment_id, item_id):
     return redirect('shipment:shipment_detail', shipment_id=shipment_id)
 
 @login_required
+@manager_required
 def add_product(request):
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
@@ -166,6 +174,7 @@ def add_product(request):
     return render(request, 'shipment/add_product.html', context)
 
 @login_required
+@manager_required
 def add_category(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST, request.FILES)

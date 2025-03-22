@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block header %}
+<title>Order Details</title>
 <style>
     #order-details-container {
     
@@ -73,14 +74,14 @@
         </a>
 
         {% if user.role == "manager" %}
-            {% if order.status != "Confirmed" %}
+            {% if order.status != "Delivered" %}
         <form action="{% url 'orders:change_order_status' order.id %}" method="post">
             {% csrf_token %}
             <button type="submit" class="btn btn-primary btn-sm mt-3 inline-block">
                 {% if order.status == "Pending" %}
-                    Mark as Loaded
-                {% elif order.status == "Loaded" %}
                     Mark as Confirmed
+                {% elif order.status == "Confirmed" %}
+                    Mark as Delivered
                 {% endif %}
             </button>
         </form>
@@ -99,7 +100,7 @@
                 <th>Quantity</th>
                 <th>Category</th>
                 <th>Stock Status</th>
-                {% if order.status != "Loaded" and order.status != "Confirmed" %}
+                {% if order.status != "Confirmed" and order.status != "Delivered" %}
                 <th>Actions</th>
                 {% endif %}
             </tr>
@@ -113,7 +114,7 @@
                 <td data-label="Category">{{ item.product.category.name }}</td>
                 <td data-label="Stock Status">{{ item.product.get_stock_status  }}: {{ item.product.quantity }}</td>
 
-                {% if order.status != "Loaded" and order.status != "Confirmed" %}
+                {% if order.status != "Confirmed" and order.status != "Delivered" %}
                 <td data-label="Actions">
                  <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                 data-bs-target="#editQuantityModal"
@@ -139,7 +140,7 @@
         </tbody>
     </table>
 
-    {% if order.status != "Loaded" and order.status != "Confirmed" %}
+    {% if order.status == "Pending" %}
           <h4 class="mt-4"><i class="fas fa-cart-plus"></i> Add Product</h4>
  <form method="post" action="{% url 'orders:add_product_to_order' order.id %}">
     {% csrf_token %}
@@ -231,33 +232,33 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("modal-product-id").value = productId;
         document.getElementById("modal-quantity").value = currentQuantity;
 
-        // Update form action dynamically
+
         document.getElementById("editQuantityForm").action = `/orders/{{ order.id }}/edit-product/${productId}/`;
     });
 });
 
 
 
-    // document.querySelectorAll('.delete-btn').forEach(button => {
-    //     button.addEventListener('click', function() {
-    //         const form = this.closest('form');
-    //         const itemId = this.getAttribute('data-item');
+document.querySelectorAll('.delete-btn').forEach(button => {
+    button.addEventListener('click', function() {
+          const form = this.closest('form');
+          const itemId = this.getAttribute('data-item');
 
-    //         Swal.fire({
-    //             title: 'Are you sure?',
-    //             text: "This product will be removed from the order!",
-    //             icon: 'warning',
-    //             showCancelButton: true,
-    //             confirmButtonColor: '#d33',
-    //             cancelButtonColor: '#3085d6',
-    //             confirmButtonText: 'Yes, delete it!'
-    //         }).then((result) => {
-    //             if (result.isConfirmed) {
-    //                 form.submit();
-    //             }
-    //         });
-    //     });
-    // });
+       Swal.fire({
+               title: 'Are you sure?',
+                text: "This product will be removed from the order!",
+             icon: 'warning',
+                showCancelButton: true,
+               confirmButtonColor: '#d33',
+           cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                 if (result.isConfirmed) {
+                  form.submit();
+               }
+            });
+        });
+    });
 
         function filterProducts() {
         let categoryFilter = document.getElementById("category").value;
