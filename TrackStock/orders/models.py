@@ -30,20 +30,22 @@ class Order(models.Model):
 
         if quantity > product.quantity:
             return "Not enough stock available."
+
+        # Ensure quantity is always set
         order_item, created = OrderItem.objects.get_or_create(
             order=self,
             product=product,
-            defaults={"quantity": 0} 
+            defaults={"quantity": 0}
         )
 
-        if quantity > product.quantity:  
+        if quantity > product.quantity:
             return f"Only {product.quantity} units available in stock."
 
-        order_item.quantity += quantity 
-        product.quantity -= quantity  
+        order_item.quantity += quantity
+        product.quantity -= quantity
         product.save()
         order_item.save()
-        return None 
+        return None
 
     def update_product(self, product, new_quantity):
         """Updates the quantity of a product in the order and adjusts stock"""
@@ -56,18 +58,19 @@ class Order(models.Model):
                 return f"Not enough stock available for {product.name}."
 
             order_item.quantity = new_quantity
-            product.quantity -= stock_difference 
+            product.quantity -= stock_difference
 
             product.save()
             order_item.save()
-            return None  
+            return None
         return f"{product.name} is not in this order."
 
     def remove_product(self, product):
+        """Removes a product from the order and restores stock"""
         order_item = OrderItem.objects.filter(order=self, product=product).first()
 
         if order_item:
-            product.quantity += order_item.quantity  
+            product.quantity += order_item.quantity
             product.save()
             order_item.delete()
         else:
@@ -83,7 +86,7 @@ class OrderItem(models.Model):
         return f"{self.quantity} of {self.product.name} in Order {self.order.id}"
 
 
-    #def delete(self, *args, **kwargs):
-    #    self.product.quantity += self.quantity 
-    #    self.product.save()
-    #    super().delete(*args, **kwargs)
+    def delete(self, *args, **kwargs):
+        self.product.quantity += self.quantity
+        self.product.save()
+        super().delete(*args, **kwargs)
