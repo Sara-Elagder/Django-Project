@@ -11,7 +11,7 @@ from inventory.models import Product, Category
 from .decorators import manager_required
 from django.core.exceptions import ValidationError
 from .filters import OrderFilter
-
+from collections import defaultdict
 
 @login_required
 def create_order(request):
@@ -27,26 +27,53 @@ def create_order(request):
             formset = OrderItemFormSet(request.POST, instance=order)
 
             if formset.is_valid():
-                formset.save()
-                messages.success(request, "Order created successfully.")
-                return redirect('orders:order_list')
+                insufficient_stock = []
+                product_quantities = defaultdict(int)
+
+                for form in formset:
+                    if form.cleaned_data:
+                        product = form.cleaned_data["product"]
+                        quantity = form.cleaned_data["quantity"]
+                        product_quantities[product] += quantity
+
+                for product, total_quantity in product_quantities.items():
+                    if total_quantity > product.quantity:
+                        insufficient_stock.append(f"{product.name} (Available: {product.quantity})")
+
+                if insufficient_stock:
+                    order.delete()
+                    messages.error(request, f"Not enough stock for: {', '.join(insufficient_stock)}.")
+                else:
+
+                    for product, total_quantity in product_quantities.items():
+                        product.quantity -= total_quantity
+                        product.save()
+
+
+                        order_item, created = OrderItem.objects.get_or_create(
+                            order=order,
+                            product=product,
+                            defaults={'quantity': 0}
+                        )
+                        order_item.quantity += total_quantity
+                        order_item.save()
+
+                    messages.success(request, "Order created successfully.")
+                    return redirect('orders:order_list')
+
             else:
                 order.delete()
-                print(f"Formset errors: {formset.errors}")
                 messages.error(request, "Please correct the errors in the order items.")
+
         else:
-            formset = OrderItemFormSet(request.POST)
-            print(f"Order form errors: {order_form.errors}")
             messages.error(request, "Please correct the errors in the order form.")
+
     else:
         order_form = OrderForm()
         formset = OrderItemFormSet()
 
-    context = {
-        'order_form': order_form,
-        'formset': formset,
-    }
-    return render(request, 'orders/create_order.html', context)
+    return render(request, 'orders/create_order.html', {'order_form': order_form, 'formset': formset})
+
 
 @login_required
 @manager_required
@@ -121,43 +148,36 @@ def order_details(request, order_id):
         'categories': categories
     })
 
-# @login_required
-# def order_delete(request, order_id):
-#
-#     order = get_object_or_404(Order, id=order_id)
-#
-#     if order.status == "Confirmed":
-#         messages.error(request, "You cannot delete the order as it has been already confirmed.")
-#         return redirect("orders:order_list")
-#
-#     if request.method == "POST":
-#
-#         for item in order.items.all():
-#             item.product.quantity += item.quantity
-#             item.product.save()
-#
-#         order.delete()
-#         messages.success(request, "Order deleted successfully, and product stock has been restored.")
-#
-#     return redirect(reverse('orders:order_list'))
+@login_required
+def order_delete(request, order_id):
+
+    order = get_object_or_404(Order, id=order_id)
+
+    if order.status == "Confirmed" or order.status == "Delivered":
+        messages.error(request, "You cannot delete the order as it has been already confirmed or delivered.")
+        return redirect("orders:order_details", order_id=order.id)
+
+    if request.method == "POST":
+
+        for item in order.items.all():
+            item.product.quantity += item.quantity
+            item.product.save()
+
+        order.delete()
+        messages.success(request, "Order deleted successfully, and product stock has been restored.")
+
+    return redirect(reverse('orders:order_list'))
 #
 
 
 @login_required
 def delete_product(request, order_id, item_id):
     order = get_object_or_404(Order, id=order_id)
-
-    if order.status == "Confirmed" or order.status == "Loaded":
-        messages.error(request, "You cannot add products to the order as it has been already loaded or confirmed.")
-        return redirect("orders:order_details", order_id=order.id)
-
     item = get_object_or_404(OrderItem, id=item_id, order_id=order_id)
 
-
-    if order.status == "Confirmed" or order.status == "Loaded":
-        messages.error(request, "You cannot delete the order as it has been already loaded or confirmed.")
+    if order.status == "Confirmed" or order.status == "Delivered":
+        messages.error(request, "You cannot delete the product as it has been already confirmed or delivered.")
         return redirect("orders:order_details", order_id=order.id)
-
 
     if request.method == "POST":
         product = item.product
@@ -173,8 +193,8 @@ def delete_product(request, order_id, item_id):
 def add_product_to_order(request, order_id):
     order = get_object_or_404(Order, id=order_id)
 
-    if order.status == "Confirmed" or order.status == "Loaded":
-        messages.error(request, "You cannot add products to the order as it has been already loaded or confirmed.")
+    if order.status == "Confirmed" or order.status == "Delivered":
+        messages.error(request, "You cannot add the product as it has been already confirmed or delivered.")
         return redirect("orders:order_details", order_id=order.id)
 
     if request.method == "POST":
@@ -208,8 +228,8 @@ def add_product_to_order(request, order_id):
 def edit_product_in_order(request, order_id, product_id):
     order = get_object_or_404(Order, id=order_id)
 
-    if order.status == "Confirmed" or order.status == "Loaded":
-        messages.error(request, "You cannot edit the order as it has been already loaded or confirmed.")
+    if order.status == "Confirmed" or order.status == "Delivered":
+        messages.error(request, "You cannot edit the order as it has been already confirmed or delivered.")
         return redirect("orders:order_details", order_id=order.id)
 
     if request.method == "POST":
@@ -238,14 +258,14 @@ def edit_product_in_order(request, order_id, product_id):
 def change_order_status(request, order_id):
     order = get_object_or_404(Order, id=order_id)
 
-    if order.status == "Confirmed":
-        messages.error(request, "You cannot change the status of a confirmed order.")
+    if order.status == "Delivered":
+        messages.error(request, "You cannot change the status of a delivered order.")
         return redirect("orders:order_details", order_id=order.id)
 
     if order.status == "Pending":
-        order.status = "Loaded"
-    elif order.status == "Loaded":
         order.status = "Confirmed"
+    elif order.status == "Confirmed":
+        order.status = "Delivered"
 
     order.save()
     messages.success(request, f"Order status changed to {order.status}.")

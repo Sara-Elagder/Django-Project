@@ -13,8 +13,8 @@ class Supermarket(models.Model):
 class Order(models.Model):
     STATUS_CHOICES = [
         ('Pending', 'Pending'),
-        ('Loaded', 'Loaded'),
         ('Confirmed', 'Confirmed'),
+        ('Delivered', 'Delivered'),
     ]
     supermarket = models.ForeignKey(Supermarket, on_delete=models.CASCADE ,default=1)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -26,7 +26,6 @@ class Order(models.Model):
         return f"Order for {self.supermarket.name} on {self.date_created.strftime('%Y-%m-%d')}"
 
     def add_product(self, product, quantity):
-        """Adds a product to the order, updates quantity if it exists, and adjusts stock"""
 
         if quantity > product.quantity:
             return "Not enough stock available."
@@ -48,7 +47,6 @@ class Order(models.Model):
         return None
 
     def update_product(self, product, new_quantity):
-        """Updates the quantity of a product in the order and adjusts stock"""
         order_item = OrderItem.objects.filter(order=self, product=product).first()
 
         if order_item:
@@ -66,7 +64,6 @@ class Order(models.Model):
         return f"{product.name} is not in this order."
 
     def remove_product(self, product):
-        """Removes a product from the order and restores stock"""
         order_item = OrderItem.objects.filter(order=self, product=product).first()
 
         if order_item:

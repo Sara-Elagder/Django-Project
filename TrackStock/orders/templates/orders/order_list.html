@@ -3,6 +3,7 @@
 
 {% block header %}
 
+<title>Orders List</title>
 
 <style>
     /* Unique Orders Table Styling */
@@ -117,25 +118,25 @@
     }
 </style>
 
-<!-- <script>
-    function confirmDelete(event, form) {-->
-<!--        event.preventDefault();-->
+<script>
+    function confirmDelete(event, form) {
+        event.preventDefault();
 
-<!--        Swal.fire({-->
-<!--            title: "Are you sure?",-->
-<!--            text: "You won't be able to undo this action!",-->
-<!--            icon: "warning",-->
-<!--            showCancelButton: true,-->
-<!--            confirmButtonColor: "#d33",-->
-<!--            cancelButtonColor: "#3085d6",-->
-<!--            confirmButtonText: "Yes, delete it!",-->
-<!--        }).then((result) => {-->
-<!--            if (result.isConfirmed) {-->
-<!--                form.submit();-->
-<!--            }-->
-<!--        });-->
-<!--    }-->
-<!-- </script> -->
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to undo this action!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    }
+</script>
 {% endblock header %}
 
 {% block main_content %}
@@ -213,13 +214,13 @@
                     <span class="badge badge-pending">
                                 <i class="fas fa-hourglass-half"></i> Pending
                             </span>
-                    {% elif order.status == "Loaded" %}
-                    <span class="badge badge-loaded">
-                                <i class="fas fa-truck"></i> Loaded
-                            </span>
-                    {% else %}
+                    {% elif order.status == "Confirmed" %}
                     <span class="badge badge-confirmed">
                                 <i class="fas fa-check-circle"></i> Confirmed
+                            </span>
+                    {% else %}
+                    <span class="badge badge-loaded">
+                                <i class="fas fa-truck"></i> Delivered
                             </span>
                     {% endif %}
                 </td>
@@ -228,18 +229,18 @@
                         <i class="fas fa-eye"></i> View
                     </a>
 
-                        {% comment %}
-                        {% if order.status != "Confirmed" %}
+
+                        {% if order.status == "Pending" %}
                         <form method="post" action="{% url 'orders:order_delete' order.id %}"
                               class="d-inline"
                               onsubmit="confirmDelete(event, this);">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-sm btn-outline-danger">
-                                <i class="fas fa-trash-alt"></i> Delete
+                                <i class="fas fa-times"></i> Cancel
                             </button>
                         </form>
                         {% endif %}
-                        {% endcomment %}
+
                     </td>
                 </tr>
                 {% endfor %}

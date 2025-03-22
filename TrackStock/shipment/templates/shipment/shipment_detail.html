@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% load static %}
 {% block header %}
+
+<title>Shipment Details</title>
+
 <style>
     .btn.btn-add {
         background-color: #4f72b8 !important;
@@ -76,7 +79,7 @@
                 {% if shipment.status == 'Pending' %}
                     <span class="badge bg-warning text-dark">Pending</span>
                 {% elif shipment.status == 'Loaded' %}
-                    <span class="badge bg-primary">Loaded</span>
+                    <span class="badge bg-primary">Confirmed</span>
                 {% else %}
                     <span class="badge bg-success">Received</span>
                 {% endif %}
@@ -112,9 +115,9 @@
                                 <button class="btn btn-sm btn-outline-secondary disabled-btn" disabled title="You cannot edit after finishing the shipment">
                                     <i class="bi bi-pencil"></i> Edit
                                 </button>
-                                <!-- <button class="btn btn-sm btn-outline-secondary disabled-btn" disabled title="You cannot delete after finishing the shipment">
-                                    <i class="bi bi-trash"></i> Delete
-                                </button> -->
+<!--                                <button class="btn btn-sm btn-outline-secondary disabled-btn" disabled title="You cannot delete after finishing the shipment">-->
+<!--                                    <i class="bi bi-trash"></i> Delete-->
+<!--                                </button>-->
                             {% else %}
                                 <a href="{% url 'shipment:edit_product' shipment.id item.id %}" class="btn btn-sm btn-outline-primary">
                                     <i class="bi bi-pencil"></i> Edit
@@ -146,15 +149,17 @@
                 </table>
             </div>
 
+        {% if user.role == "manager" %}
             <div class="mt-4">
                 {% if shipment.status == "Pending" and shipment.items.all %}
                     <form method="post" action="{% url 'shipment:finish_shipment' shipment.id %}" 
                         onsubmit="return confirm('Are you sure you want to finish this shipment?');">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-warning">
-                            <i class="bi bi-flag"></i> Finish Shipment
+                            <i class="bi bi-flag"></i> Mark As Confirmed
                         </button>
                     </form>
+
                 {% comment %} {% elif shipment.status == "Pending" and not shipment.items.all %}
                     <p class="text-danger"><strong>Add products first before finishing the shipment.</strong></p> {% endcomment %}
                 {% elif shipment.status == 'Loaded' %}
@@ -171,8 +176,18 @@
                 {% endif %}
                 
             </div>
+            {% endif %}
         </div>
     </div>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}" role="alert">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
 </div>
 
 

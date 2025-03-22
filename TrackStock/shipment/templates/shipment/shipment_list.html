@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% load static %}
 {% block header %}
+
+<title>Shipments List</title>
+
 <style>
     /* Updated styles */
     #shipment_list_container {
@@ -178,6 +181,11 @@
                             <a href="{% url 'shipment:shipment_detail' shipment.id %}" class="btn btn-outline-primary btn-sm me-2">
                                 <i class="bi bi-eye"></i> View
                             </a>
+                            {% if shipment.status == "Pending" %}
+                            <a href="{% url 'shipment:shipment_delete' shipment.id %}" class="btn btn-outline-danger btn-sm me-2">
+                                <i class="bi bi-trash"></i> Cancel
+                            </a>
+                            {% endif %}
                         </td>
                     </tr>
                     {% empty %}
@@ -218,5 +226,14 @@
         </ul>
     </div>
     {% endif %}
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}" role="alert">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
 </div>
 {% endblock %}
