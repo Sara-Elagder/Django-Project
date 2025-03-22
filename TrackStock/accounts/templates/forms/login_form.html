@@ -24,7 +24,8 @@
                         {% csrf_token %}
  
                         {% if form.errors %}
-                            <div class="alert alert-danger">
+                            {% comment %} <div class="alert alert-danger"> {% endcomment %}
+                                <div div class="alert alert-danger" style="color: white; background-color: #dc3545; padding: 10px; border-radius: 5px; font-weight: bold;">
                                 <strong>Error:</strong> Please correct the errors below.
                                 {% for field in form %}
                                     {% for error in field.errors %}
