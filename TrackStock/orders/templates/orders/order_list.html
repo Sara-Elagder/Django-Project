@@ -117,25 +117,25 @@
     }
 </style>
 
-<script>
-    // function confirmDelete(event, form) {
-    //     event.preventDefault(); // Prevent form submission
+<!-- <script>
+    function confirmDelete(event, form) {-->
+<!--        event.preventDefault();-->
 
-    //     Swal.fire({
-    //         title: "Are you sure?",
-    //         text: "You won't be able to undo this action!",
-    //         icon: "warning",
-    //         showCancelButton: true,
-    //         confirmButtonColor: "#d33",
-    //         cancelButtonColor: "#3085d6",
-    //         confirmButtonText: "Yes, delete it!",
-    //     }).then((result) => {
-    //         if (result.isConfirmed) {
-    //             form.submit();
-    //         }
-    //     });
-    // }
-</script>
+<!--        Swal.fire({-->
+<!--            title: "Are you sure?",-->
+<!--            text: "You won't be able to undo this action!",-->
+<!--            icon: "warning",-->
+<!--            showCancelButton: true,-->
+<!--            confirmButtonColor: "#d33",-->
+<!--            cancelButtonColor: "#3085d6",-->
+<!--            confirmButtonText: "Yes, delete it!",-->
+<!--        }).then((result) => {-->
+<!--            if (result.isConfirmed) {-->
+<!--                form.submit();-->
+<!--            }-->
+<!--        });-->
+<!--    }-->
+<!-- </script> -->
 {% endblock header %}
 
 {% block main_content %}
@@ -143,9 +143,11 @@
     <h2 class="mb-3 text-center text-primary"><i class="fas fa-box text-primary"></i> Orders List</h2>
 
     <div class="d-flex justify-content-between mb-2">
-        <a href="{% url 'orders:create_supermarket' %}" class="btn btn-primary me-3">
-            <i class="fas fa-shop"></i> Add New Supermarket
-        </a>
+        {% if user.role == "manager" %}
+            <a href="{% url 'orders:create_supermarket' %}" class="btn btn-primary me-3">
+                <i class="fas fa-shop"></i> Add New Supermarket
+            </a>
+            {% endif %}
         <a href="{% url 'orders:supermarket_list' %}" class="btn btn-outline-secondary me-auto">
             <i class="fas fa-list"></i> Supermarket List
         </a>
@@ -226,19 +228,21 @@
                         <i class="fas fa-eye"></i> View
                     </a>
 
-                    {% if order.status != "Confirmed" %}
-                    <form method="post" action="{% url 'orders:order_delete' order.id %}"
-                          class="d-inline"
-                          onsubmit="confirmDelete(event, this);">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-sm btn-outline-danger">
-                            <i class="fas fa-trash-alt"></i> Delete
-                        </button>
-                    </form>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
+                        {% comment %}
+                        {% if order.status != "Confirmed" %}
+                        <form method="post" action="{% url 'orders:order_delete' order.id %}"
+                              class="d-inline"
+                              onsubmit="confirmDelete(event, this);">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <i class="fas fa-trash-alt"></i> Delete
+                            </button>
+                        </form>
+                        {% endif %}
+                        {% endcomment %}
+                    </td>
+                </tr>
+                {% endfor %}
             </tbody>
         </table>
         {% else %}

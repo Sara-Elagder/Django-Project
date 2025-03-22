@@ -35,17 +35,17 @@ class Order(models.Model):
         order_item, created = OrderItem.objects.get_or_create(
             order=self,
             product=product,
-            defaults={"quantity": 0}  # ✅ Ensures quantity is never NULL
+            defaults={"quantity": 0}
         )
 
-        if quantity > product.quantity:  # ✅ Check only the newly requested quantity
+        if quantity > product.quantity:
             return f"Only {product.quantity} units available in stock."
 
-        order_item.quantity += quantity  # ✅ Correctly increase order quantity
-        product.quantity -= quantity  # ✅ Reduce stock correctly
+        order_item.quantity += quantity
+        product.quantity -= quantity
         product.save()
         order_item.save()
-        return None  # ✅ Return None to indicate success
+        return None
 
     def update_product(self, product, new_quantity):
         """Updates the quantity of a product in the order and adjusts stock"""
@@ -58,11 +58,11 @@ class Order(models.Model):
                 return f"Not enough stock available for {product.name}."
 
             order_item.quantity = new_quantity
-            product.quantity -= stock_difference  # Adjust stock
+            product.quantity -= stock_difference
 
             product.save()
             order_item.save()
-            return None  # No error, update successful
+            return None
         return f"{product.name} is not in this order."
 
     def remove_product(self, product):
@@ -70,7 +70,7 @@ class Order(models.Model):
         order_item = OrderItem.objects.filter(order=self, product=product).first()
 
         if order_item:
-            product.quantity += order_item.quantity  # Restore stock
+            product.quantity += order_item.quantity
             product.save()
             order_item.delete()
         else:
@@ -87,7 +87,6 @@ class OrderItem(models.Model):
 
 
     def delete(self, *args, **kwargs):
-        """Restore stock when an order item is deleted"""
-        self.product.quantity += self.quantity  # Restore stock
+        self.product.quantity += self.quantity
         self.product.save()
         super().delete(*args, **kwargs)

@@ -8,6 +8,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from .models import Order, OrderItem, Supermarket
 from .forms import OrderForm, OrderItemFormSet, SupermarketForm
 from inventory.models import Product, Category
+from .decorators import manager_required
 from django.core.exceptions import ValidationError
 from .filters import OrderFilter
 
@@ -48,6 +49,7 @@ def create_order(request):
     return render(request, 'orders/create_order.html', context)
 
 @login_required
+@manager_required
 def create_supermarket(request):
     if request.method == 'POST':
         form = SupermarketForm(request.POST)
@@ -64,7 +66,6 @@ def create_supermarket(request):
         'form': form,
     }
     return render(request, 'orders/create_supermarket.html', context)
-
 
 @login_required
 def order_list(request):
@@ -84,6 +85,7 @@ def supermarket_list(request):
 
 
 @login_required
+@manager_required
 def delete_supermarket(request, supermarket_id):
     supermarket = get_object_or_404(Supermarket, id=supermarket_id)
 
@@ -119,26 +121,26 @@ def order_details(request, order_id):
         'categories': categories
     })
 
-@login_required
-def order_delete(request, order_id):
-
-    order = get_object_or_404(Order, id=order_id)
-
-    if order.status == "Confirmed":
-        messages.error(request, "You cannot delete the order as it has been already confirmed.")
-        return redirect("orders:order_list")
-
-    if request.method == "POST":
-
-        for item in order.items.all():
-            item.product.quantity += item.quantity
-            item.product.save()
-
-        order.delete()
-        messages.success(request, "Order deleted successfully, and product stock has been restored.")
-
-    return redirect(reverse('orders:order_list'))
-
+# @login_required
+# def order_delete(request, order_id):
+#
+#     order = get_object_or_404(Order, id=order_id)
+#
+#     if order.status == "Confirmed":
+#         messages.error(request, "You cannot delete the order as it has been already confirmed.")
+#         return redirect("orders:order_list")
+#
+#     if request.method == "POST":
+#
+#         for item in order.items.all():
+#             item.product.quantity += item.quantity
+#             item.product.save()
+#
+#         order.delete()
+#         messages.success(request, "Order deleted successfully, and product stock has been restored.")
+#
+#     return redirect(reverse('orders:order_list'))
+#
 
 
 @login_required
@@ -221,7 +223,6 @@ def edit_product_in_order(request, order_id, product_id):
             messages.error(request, "Quantity must be at least 1.")
             return redirect("orders:order_details", order_id=order.id)
 
-        # Try updating the product without redirecting to an error page
         error_message = order.update_product(product, new_quantity)
 
         if error_message:  # If there's an error, show it to the user
@@ -233,10 +234,10 @@ def edit_product_in_order(request, order_id, product_id):
 
 
 @login_required
+@manager_required
 def change_order_status(request, order_id):
     order = get_object_or_404(Order, id=order_id)
 
-    # 🚨 Prevent further changes if the order is already confirmed
     if order.status == "Confirmed":
         messages.error(request, "You cannot change the status of a confirmed order.")
         return redirect("orders:order_details", order_id=order.id)

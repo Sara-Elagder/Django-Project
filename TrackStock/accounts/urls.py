@@ -9,8 +9,8 @@ app_name = 'accounts'
 
 handler404 = Custom404View.as_view()
 urlpatterns = [
+     path('', LoginView.as_view(), name='login'),
     path('register/', RegisterView.as_view(), name='registration'),
-    path('', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('manager-management/', ManagerManagementView.as_view(), name='manager_management'),
     path('dashboard/', views.dashboard, name='dashboard'),
