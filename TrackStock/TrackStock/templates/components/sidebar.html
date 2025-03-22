@@ -1,6 +1,6 @@
 {% load static %}
 <div class="sidebar">
-    <a href="#" class="{% if request.path == '/dashboard/' %}active{% endif %}">
+    <a href="{% url 'accounts:dashboard' %}" class="{% if request.path == '/dashboard/' %}active{% endif %}">
         <i class="bi bi-grid-1x2-fill"></i>
         <span>Dashboard</span>
     </a>

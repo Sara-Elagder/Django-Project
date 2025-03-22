@@ -117,8 +117,8 @@
     }
 </style>
 
-<script>
-<!--    function confirmDelete(event, form) {-->
+<!-- <script>
+    function confirmDelete(event, form) {-->
 <!--        event.preventDefault();-->
 
 <!--        Swal.fire({-->
@@ -135,12 +135,12 @@
 <!--            }-->
 <!--        });-->
 <!--    }-->
-</script>
+<!-- </script> -->
 {% endblock header %}
 
 {% block main_content %}
 <div class="container" id="orders-table-container">
-    <h2 class="mb-3 text-center"><i class="fas fa-box"></i> Orders List</h2>
+    <h2 class="mb-3 text-center text-primary"><i class="fas fa-box text-primary"></i> Orders List</h2>
 
     <div class="d-flex justify-content-between mb-2">
         {% if user.role == "manager" %}
