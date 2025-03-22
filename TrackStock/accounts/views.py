@@ -61,3 +61,13 @@ class ManagerManagementView(UserPassesTestMixin, View):
 class Custom404View(View):
     def get(self, request, exception=None):
         return render(request, '404.html', status=404)
+
+def dashboard(request):
+    context = {
+        'total_employees': 2451,
+        'total_products': 890,
+        'total_factories': 12,
+        'total_categories': 24,
+        'total_managers': 15,
+    }
+    return render(request, 'main_dashboard.html', context)

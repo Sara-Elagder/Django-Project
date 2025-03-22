@@ -14,6 +14,7 @@
 body {
     overflow-x: hidden;
     width: 100%;
+    
 }
 .navbar {
     background:var(--color-dark);
@@ -27,7 +28,7 @@ body {
     display: flex;
     align-items: center;
     padding: 0.5rem 1rem;
-    color: white    ;
+    color: white !important;
 }
 
 .navbar .container-fluid {
@@ -36,7 +37,7 @@ body {
 
 .navbar-brand {
     padding-left: 10px;  
-    color: white;
+    color: white !important;
     font-weight: bold;
 }
 .navbar-toggler {
@@ -415,11 +416,11 @@ body {
 .search-form .form-control::placeholder {
     color: rgba(255, 255, 255, 0.7);
 }
-
-.badge.bg-success { background: linear-gradient(45deg, var(--color-lighter), var(--color-lightest)) !important; }
-.badge.bg-primary { background: linear-gradient(45deg, var(--color-medium), var(--color-lighter)) !important; }
-.badge.bg-warning { background: linear-gradient(45deg, var(--color-lightest), var(--color-lighter)) !important; }
-
+/*override the bootstrap colors */
+.badge.bg-success { background:green  ; color: white !important;}
+.badge.bg-primary { background: yellow ; color: white !important;}
+.badge.bg-warning { background:  blue   ; color: white !important;}
+.text-primary {color : var(--color-dark) !important;  }
 .btn-primary {
     background: var(--color-medium);
     border-color: var(--color-medium);
@@ -428,6 +429,7 @@ body {
 .btn-primary:hover {
     background: var(--color-dark);
     border-color: var(--color-dark);
+    color: white !important;
 }
 
 .card-header {

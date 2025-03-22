@@ -4,10 +4,9 @@
 {% block header %}
 <style>
     #order-details-container {
-        max-width: 900px;
-        margin: auto;
-        padding: 20px;
-    }
+    
+        margin: 30px 30px;
+     }
 
     #order-info {
         background: #f8f9fa;
@@ -60,7 +59,7 @@
 {% endblock header %}
 
 {% block main_content %}
-<div class="container" id="order-details-container">
+<div   id="order-details-container">
     <h2 class="text-center"><i class="fas fa-box-open"></i> Order Details</h2>
     <hr>
 
@@ -272,4 +271,5 @@ document.addEventListener("DOMContentLoaded", function() {
         productDropdown.selectedIndex = 0;
     }
 </script>
-{% endblock %}
+ 
+{% endblock main_content %}

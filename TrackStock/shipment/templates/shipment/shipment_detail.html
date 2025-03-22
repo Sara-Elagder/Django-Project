@@ -7,10 +7,45 @@
         color: white !important;
     }
 /* centrize the containt*/
-    /* #shipment_container{
-        margin-left: 200px;
-        margin-top: 50px;
-    } */
+     #shipment_container{
+        margin: 70px  50px;
+    } 
+    @media (max-width: 768px) {
+        #shipment_container   {
+                            margin-left:150px;
+                            
+
+            }
+            .card-body{
+                width: 500px;
+            }
+            .card{
+                width: 500px;
+            }
+            .btn {
+                height: 60px;
+                width: 200px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            #shipment_container   {
+                            margin-left:20px;
+                            
+
+            }
+            .card-body{
+                width: 280px;
+            }
+            .card{
+                width: 280px;
+            }
+            .btn {
+                height: 60px;
+                width: 200px;
+            }
+        }
+
 </style>
 {% endblock header %}
 {% block main_content %}

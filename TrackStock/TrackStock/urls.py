@@ -25,5 +25,6 @@ urlpatterns = [
     path('shipment/', include('shipment.urls')),
     path('', include('accounts.urls')),
     path('orders/', include('orders.urls', namespace='orders')),
+    path('accounts/', include('accounts.urls', namespace='accounts')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) \
  + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

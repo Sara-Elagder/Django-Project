@@ -1,0 +1,259 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<title>Dashboard - FactoryHub</title>
+<style>
+    :root {
+        --primary: #6571ff;
+        --secondary: #7987a1;
+        --success: #05a34a;
+        --info: #66d1d1;
+        --warning: #fbbc06;
+        --danger: #ff3366;
+        --light: #e9ecef;
+        --dark: #060c17;
+        --background: #f9fafb;
+        --card-bg: #ffffff;
+    }
+    
+    body {
+        background: var(--background);
+        font-family: 'Inter', sans-serif;
+        overflow-x: hidden;
+    }
+
+    .stats-card {
+        background: var(--card-bg);
+        border-radius: 1rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        transition: all 0.3s;
+        border: none;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+
+    .stats-icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        font-size: 1.5rem;
+    }
+
+    .chart-container {
+        background: var(--card-bg);
+        border-radius: 1rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        padding: 1.5rem;
+        height: 100%;
+    }
+
+    .table-responsive {
+        background: var(--card-bg);
+        border-radius: 1rem;
+        padding: 1.5rem;
+    }
+
+    /* New utility classes */
+    .fs-12 { font-size: 12px; }
+    .fs-14 { font-size: 14px; }
+    .fs-16 { font-size: 16px; }
+    .fw-medium { font-weight: 500; }
+    .rounded-xl { border-radius: 1rem; }
+
+    /* Remove sidebar related styles */
+    .main-content {
+        padding: 2rem;
+        min-height: 100vh;
+        margin-left: 0; /* Remove sidebar margin */
+    }
+</style>
+{% endblock header %}
+
+{% block main_content %}
+<div  class="m-5">
+    <h2 class="text-primary mb-4">Inventory Dashboard</h2>
+    <!-- Stats Grid -->
+    <div class="row g-4 mb-4">
+        {% if user.is_authenticated and user.role == 'manager' %}
+
+        <!-- Employee Stats -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="stats-card">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="stats-icon bg-primary-subtle">
+                            <i class="fas fa-users text-primary fa-lg"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h5 class="mb-0">2,451</h5>
+                            <span class="text-muted fs-13">Total Employees</span>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mt-3">
+                        <span class="text-success me-2">
+                            <i class="fas fa-arrow-up me-1"></i>12%
+                        </span>
+                        <span class="text-muted fs-13">From last month</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <!-- Similar structure for Products, Factories, Categories, Managers -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="stats-card">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="stats-icon bg-success-subtle">
+                            <i class="fas fa-box text-success fa-lg"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h5 class="mb-0">890</h5>
+                            <span class="text-muted fs-13">Total Products</span>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mt-3">
+                        <span class="text-success me-2">
+                            <i class="fas fa-arrow-up me-1"></i>8%
+                        </span>
+                        <span class="text-muted fs-13">From last month</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="stats-card">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="stats-icon bg-info-subtle">
+                            <i class="fas fa-industry text-info fa-lg"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h5 class="mb-0">12</h5>
+                            <span class="text-muted fs-13">Total Factories</span>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mt-3">
+                        <span class="text-success me-2">
+                            <i class="fas fa-arrow-up me-1"></i>5%
+                        </span>
+                        <span class="text-muted fs-13">From last month</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="stats-card">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="stats-icon bg-warning-subtle">
+                            <i class="fas fa-tag text-warning fa-lg"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h5 class="mb-0">24</h5>
+                            <span class="text-muted fs-13">Total Categories</span>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mt-3">
+                        <span class="text-success me-2">
+                            <i class="fas fa-arrow-up me-1"></i>10%
+                        </span>
+                        <span class="text-muted fs-13">From last month</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if user.is_authenticated and user.role == 'manager' %}
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="stats-card">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="stats-icon bg-danger-subtle">
+                            <i class="fas fa-user-tie text-danger fa-lg"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h5 class="mb-0">15</h5>
+                            <span class="text-muted fs-13">Total Managers</span>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mt-3">
+                        <span class="text-success me-2">
+                            <i class="fas fa-arrow-up me-1"></i>7%
+                        </span>
+                        <span class="text-muted fs-13">From last month</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+    <!-- Charts Section -->
+    <div class="row g-4"></div>
+        <div class="col-lg-8">
+            <div class="chart-container">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="card-title">Sales Analytics</h5>
+                    <div class="chart-actions">
+                        <button class="btn btn-outline-secondary btn-sm">Export</button>
+                    </div>
+                </div>
+                <canvas id="salesChart" height="300"></canvas>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="chart-container">
+                <h5 class="card-title mb-4">Top Products</h5>
+                <canvas id="productsChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Initialize charts
+    document.addEventListener('DOMContentLoaded', function() {
+        // Sales Analytics Chart
+        const salesChart = new Chart(document.getElementById('salesChart'), {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Sales',
+                    data: [65, 59, 80, 81, 56, 55],
+                    borderColor: '#6571ff',
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                }
+            }
+        });
+
+        // Top Products Chart
+        const productsChart = new Chart(document.getElementById('productsChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Product A', 'Product B', 'Product C'],
+                datasets: [{
+                    data: [300, 200, 100],
+                    backgroundColor: ['#6571ff', '#05a34a', '#fbbc06']
+                }]
+            }
+        });
+    });
+</script>
+{% endblock main_content %}
