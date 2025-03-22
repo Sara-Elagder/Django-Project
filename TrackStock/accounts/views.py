@@ -4,6 +4,9 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, logout
 from django.views.generic import FormView, CreateView, View
 from django.contrib.auth.mixins import UserPassesTestMixin
+from inventory.models import Category, Product
+from orders.models import Order, Supermarket
+from shipment.models import Shipment
 from accounts.forms import CustomUserCreationForm
 from django.views.decorators.cache import never_cache
 from .models import User
@@ -68,10 +71,12 @@ class Custom404View(View):
 
 def dashboard(request):
     context = {
-        'total_employees': 2451,
-        'total_products': 890,
-        'total_factories': 12,
-        'total_categories': 24,
-        'total_managers': 15,
+        'total_employees': User.objects.filter(role='employee').count(),
+        'total_products': Product.objects.count(),
+        'total_categories': Category.objects.count(),
+        'total_orders': Order.objects.count(),
+        'total_shipments': Shipment.objects.count(),
+        'total_supermarkets': Supermarket.objects.count(),
+        'total_managers': User.objects.filter(role='manager').count(),
     }
     return render(request, 'main_dashboard.html', context)
