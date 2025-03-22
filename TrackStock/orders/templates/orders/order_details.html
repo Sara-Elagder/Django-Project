@@ -73,6 +73,7 @@
             <i class="fas fa-arrow-left"></i> Back to Orders
         </a>
 
+        {% if user.role == "manager" %}
             {% if order.status != "Confirmed" %}
         <form action="{% url 'orders:change_order_status' order.id %}" method="post">
             {% csrf_token %}
@@ -85,6 +86,7 @@
             </button>
         </form>
     {% endif %}
+        {% endif %}
 
 
     </div>
