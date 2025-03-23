@@ -6,13 +6,17 @@ from django.views.generic import FormView, CreateView, View
 from django.contrib.auth.mixins import UserPassesTestMixin
 from inventory.models import Category, Product
 from orders.models import Order, Supermarket
-from shipment.models import Shipment
+from shipment.models import Shipment, ShipmentItem
 from accounts.forms import CustomUserCreationForm
 from django.views.decorators.cache import never_cache
 from .models import User
 from django.views.generic.edit import FormView
 from django.utils.decorators import method_decorator
 import json
+from datetime import datetime, timedelta
+from django.db.models import Count, Sum, F
+from django.db.models.functions import TruncMonth
+from orders.models import OrderItem
 
 class RegisterView(UserPassesTestMixin, CreateView):
     model = User
@@ -70,70 +74,6 @@ class Custom404View(View):
     def get(self, request, exception=None):
         return render(request, '404.html', status=404)
 
-# def dashboard(request):
-#     context = {
-#         'total_employees': User.objects.filter(role='employee').count(),
-#         'total_products': Product.objects.count(),
-#         'total_categories': Category.objects.count(),
-#         'total_orders': Order.objects.count(),
-#         'total_shipments': Shipment.objects.count(),
-#         'total_supermarkets': Supermarket.objects.count(),
-#         'total_managers': User.objects.filter(role='manager').count(),
-#     }
-#     return render(request, 'main_dashboard.html', context)
-
-
-
-
-# def dashboard(request):
-#     # Get category names and their product counts
-#     categories = Category.objects.all()
-#     category_data = {category.name: Product.objects.filter(category=category).count() for category in categories}
-
-#     # Get employees (assuming 'role' field exists in User model)
-#     employees = User.objects.filter(role='employee')
-#     employee_data = {'Total Employees': employees.count()}  # Display total count
-
-#     context = {
-#         'total_employees': User.objects.filter(role='employee').count(),
-#         'total_products': Product.objects.count(),
-#         'total_categories': Category.objects.count(),
-#         'total_orders': Order.objects.count(),
-#         'total_shipments': Shipment.objects.count(),
-#         'total_supermarkets': Supermarket.objects.count(),
-#         'total_managers': User.objects.filter(role='manager').count()
-#     }
-#     return render(request, 'main_dashboard.html', context)
-
-
-
-# def dashboard(request):
-#     # Categories: Number of products in each category
-#     categories = Category.objects.all()
-#     category_data = {category.name: Product.objects.filter(category=category).count() for category in categories}
-
-#     # Total counts for Supermarkets, Employees, Orders, Shipments
-#     supermarkets_count = Supermarket.objects.count()
-#     employees_count = User.objects.filter(role='employee').count()
-#     orders_count = Order.objects.count()
-#     shipments_count = Shipment.objects.count()
-
-#     context = {
-#           'total_employees': User.objects.filter(role='employee').count(),
-#         'total_products': Product.objects.count(),
-#         'total_categories': Category.objects.count(),
-#         'total_orders': Order.objects.count(),
-#         'total_shipments': Shipment.objects.count(),
-#         'total_supermarkets': Supermarket.objects.count(),
-#         'total_managers': User.objects.filter(role='manager').count(),
-#         'category_data': category_data,
-#         'supermarkets_count': supermarkets_count,
-#         'employees_count': employees_count,
-#         'orders_count': orders_count,
-#         'shipments_count': shipments_count,
-#     }
-#     return render(request, 'main_dashboard.html', context)
-
 def dashboard(request):
     # Categories: Number of products in each category
     categories = Category.objects.all()
@@ -144,6 +84,97 @@ def dashboard(request):
     orders_count = Order.objects.count()
     shipments_count = Shipment.objects.count()
 
+    # Supermarket data with yearly comparison
+    supermarkets = Supermarket.objects.all()
+    current_year = datetime.now().year
+    supermarket_data = {
+        'labels': [market.name for market in supermarkets],
+        'current_year': [Order.objects.filter(supermarket=market, date_created__year=current_year).count() for market in supermarkets],
+        'previous_year': [Order.objects.filter(supermarket=market, date_created__year=current_year-1).count() for market in supermarkets]
+    }
+
+    # Employee data for scatter plot
+    employees = User.objects.filter(role='employee')
+    employee_data = [
+        {
+            'x': Order.objects.filter(created_by=emp).count(),  # Number of orders
+            'y': OrderItem.objects.filter(order__created_by=emp).count(),  # Number of items
+            'label': emp.username
+        } for emp in employees
+    ]
+
+    # Orders by month and supermarket
+    six_months_ago = datetime.now() - timedelta(days=180)
+    supermarkets = Supermarket.objects.all()
+    
+    orders_by_month_and_supermarket = {}
+    months_set = set()
+    
+    for supermarket in supermarkets:
+        orders = Order.objects.filter(
+            supermarket=supermarket,
+            date_created__gte=six_months_ago
+        ).annotate(
+            month=TruncMonth('date_created')
+        ).values('month').annotate(
+            count=Count('id')
+        ).order_by('month')
+        
+        orders_by_month_and_supermarket[supermarket.name] = orders
+        months_set.update(order['month'] for order in orders)
+    
+    months_list = sorted(list(months_set))
+    
+    orders_data = {
+        'labels': [month.strftime('%B %Y') for month in months_list],
+        'datasets': [
+            {
+                'label': supermarket.name,
+                'data': [
+                    next((o['count'] for o in orders_by_month_and_supermarket[supermarket.name] if o['month'] == month), 0)
+                    for month in months_list
+                ]
+            }
+            for supermarket in supermarkets
+        ]
+    }
+
+    # Shipments data preparation - grouped by factory and month
+    six_months_ago = datetime.now() - timedelta(days=180)
+    factories_data = {}
+    months_set = set()
+    
+    factories = Shipment.objects.values_list('factory_name', flat=True).distinct()
+    
+    for factory in factories:
+        shipments = Shipment.objects.filter(
+            factory_name=factory,
+            date_received__gte=six_months_ago
+        ).annotate(
+            month=TruncMonth('date_received')
+        ).values('month').annotate(
+            total_items=Sum('items__quantity')
+        ).order_by('month')
+        
+        factories_data[factory] = shipments
+        months_set.update(ship['month'] for ship in shipments)
+    
+    months_list = sorted(list(months_set))
+    
+    shipments_data = {
+        'labels': [month.strftime('%B %Y') for month in months_list],
+        'datasets': [
+            {
+                'label': factory_name,
+                'data': [
+                    next((s['total_items'] for s in factories_data[factory_name] if s['month'] == month), 0)
+                    for month in months_list
+                ]
+            }
+            for factory_name in factories
+        ]
+    }
+
     context = {
         'total_employees': employees_count,
         'total_products': Product.objects.count(),
@@ -153,9 +184,9 @@ def dashboard(request):
         'total_supermarkets': supermarkets_count,
         'total_managers': User.objects.filter(role='manager').count(),
         'category_data': json.dumps(category_data),  
-        'supermarkets_count': supermarkets_count,
-        'employees_count': employees_count,
-        'orders_count': orders_count,
-        'shipments_count': shipments_count,
+        'supermarket_data': json.dumps(supermarket_data),
+        'employee_data': json.dumps(employee_data),
+        'orders_data': json.dumps(orders_data),
+        'shipments_data': json.dumps(shipments_data),
     }
     return render(request, 'main_dashboard.html', context)
