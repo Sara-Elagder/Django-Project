@@ -12,6 +12,7 @@ from django.views.decorators.cache import never_cache
 from .models import User
 from django.views.generic.edit import FormView
 from django.utils.decorators import method_decorator
+import json
 
 class RegisterView(UserPassesTestMixin, CreateView):
     model = User
@@ -69,14 +70,92 @@ class Custom404View(View):
     def get(self, request, exception=None):
         return render(request, '404.html', status=404)
 
+# def dashboard(request):
+#     context = {
+#         'total_employees': User.objects.filter(role='employee').count(),
+#         'total_products': Product.objects.count(),
+#         'total_categories': Category.objects.count(),
+#         'total_orders': Order.objects.count(),
+#         'total_shipments': Shipment.objects.count(),
+#         'total_supermarkets': Supermarket.objects.count(),
+#         'total_managers': User.objects.filter(role='manager').count(),
+#     }
+#     return render(request, 'main_dashboard.html', context)
+
+
+
+
+# def dashboard(request):
+#     # Get category names and their product counts
+#     categories = Category.objects.all()
+#     category_data = {category.name: Product.objects.filter(category=category).count() for category in categories}
+
+#     # Get employees (assuming 'role' field exists in User model)
+#     employees = User.objects.filter(role='employee')
+#     employee_data = {'Total Employees': employees.count()}  # Display total count
+
+#     context = {
+#         'total_employees': User.objects.filter(role='employee').count(),
+#         'total_products': Product.objects.count(),
+#         'total_categories': Category.objects.count(),
+#         'total_orders': Order.objects.count(),
+#         'total_shipments': Shipment.objects.count(),
+#         'total_supermarkets': Supermarket.objects.count(),
+#         'total_managers': User.objects.filter(role='manager').count()
+#     }
+#     return render(request, 'main_dashboard.html', context)
+
+
+
+# def dashboard(request):
+#     # Categories: Number of products in each category
+#     categories = Category.objects.all()
+#     category_data = {category.name: Product.objects.filter(category=category).count() for category in categories}
+
+#     # Total counts for Supermarkets, Employees, Orders, Shipments
+#     supermarkets_count = Supermarket.objects.count()
+#     employees_count = User.objects.filter(role='employee').count()
+#     orders_count = Order.objects.count()
+#     shipments_count = Shipment.objects.count()
+
+#     context = {
+#           'total_employees': User.objects.filter(role='employee').count(),
+#         'total_products': Product.objects.count(),
+#         'total_categories': Category.objects.count(),
+#         'total_orders': Order.objects.count(),
+#         'total_shipments': Shipment.objects.count(),
+#         'total_supermarkets': Supermarket.objects.count(),
+#         'total_managers': User.objects.filter(role='manager').count(),
+#         'category_data': category_data,
+#         'supermarkets_count': supermarkets_count,
+#         'employees_count': employees_count,
+#         'orders_count': orders_count,
+#         'shipments_count': shipments_count,
+#     }
+#     return render(request, 'main_dashboard.html', context)
+
 def dashboard(request):
+    # Categories: Number of products in each category
+    categories = Category.objects.all()
+    category_data = {category.name: Product.objects.filter(category=category).count() for category in categories}
+
+    supermarkets_count = Supermarket.objects.count()
+    employees_count = User.objects.filter(role='employee').count()
+    orders_count = Order.objects.count()
+    shipments_count = Shipment.objects.count()
+
     context = {
-        'total_employees': User.objects.filter(role='employee').count(),
+        'total_employees': employees_count,
         'total_products': Product.objects.count(),
         'total_categories': Category.objects.count(),
-        'total_orders': Order.objects.count(),
-        'total_shipments': Shipment.objects.count(),
-        'total_supermarkets': Supermarket.objects.count(),
+        'total_orders': orders_count,
+        'total_shipments': shipments_count,
+        'total_supermarkets': supermarkets_count,
         'total_managers': User.objects.filter(role='manager').count(),
+        'category_data': json.dumps(category_data),  
+        'supermarkets_count': supermarkets_count,
+        'employees_count': employees_count,
+        'orders_count': orders_count,
+        'shipments_count': shipments_count,
     }
     return render(request, 'main_dashboard.html', context)
