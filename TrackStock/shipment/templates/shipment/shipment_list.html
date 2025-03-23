@@ -5,8 +5,7 @@
 <title>Shipments List</title>
 
 <style>
-    /* Updated styles */
-    #shipment_list_container {
+     #shipment_list_container {
         padding: 20px;
         width: 100%;
     }
@@ -182,9 +181,31 @@
                                 <i class="bi bi-eye"></i> View
                             </a>
                             {% if shipment.status == "Pending" %}
-                            <a href="{% url 'shipment:shipment_delete' shipment.id %}" class="btn btn-outline-danger btn-sm me-2">
+                            <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ shipment.id }}">
                                 <i class="bi bi-trash"></i> Cancel
-                            </a>
+                            </button>
+                            
+                            <!-- Delete Confirmation Modal -->
+                            <div class="modal fade" id="deleteModal{{ shipment.id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title text-danger">Cancel Shipment</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure you want to cancel this shipment from {{ shipment.factory_name }}?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <form action="{% url 'shipment:shipment_delete' shipment.id %}" method="post" style="display: inline;">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger">Confirm Cancel</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             {% endif %}
                         </td>
                     </tr>
@@ -229,8 +250,9 @@
 
     {% if messages %}
     {% for message in messages %}
-    <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}" role="alert">
+    <div class="alert alert-dismissible fade show {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}" role="alert">
         {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     {% endfor %}
     {% endif %}

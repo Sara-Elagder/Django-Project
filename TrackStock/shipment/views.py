@@ -98,13 +98,14 @@ def finish_shipment(request, shipment_id):
 
 
 @login_required
-@order_status_required(status="Pending")
+@manager_required  # Remove the order_status_required decorator for this view
 def update_shipment_status(request, shipment_id):
     shipment = get_object_or_404(Shipment, id=shipment_id)
 
     if shipment.status == 'Loaded':
         with transaction.atomic():  
             shipment.status = 'Received'
+            shipment.date_received = now()  # Set current date and time
             shipment.save()
 
             for item in shipment.items.all():
@@ -113,6 +114,8 @@ def update_shipment_status(request, shipment_id):
                 product.save()
 
             messages.success(request, "Shipment marked as received and inventory updated.")
+    else:
+        messages.error(request, f"Cannot update shipment. Current status: {shipment.status}")
     
     return redirect('shipment:shipment_detail', shipment_id=shipment.id)
 

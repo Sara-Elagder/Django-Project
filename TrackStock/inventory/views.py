@@ -17,10 +17,10 @@ def product_list(request):
             Q(category__name__icontains=search_query)
         )
 
-    # Apply category filter if exists
+ 
     if category_id:
         if category_id == 'low_stock':
-            # Using a fixed threshold of 5 for low stock
+ 
             products = products.filter(quantity__gt=0, quantity__lte=5)
         elif category_id == 'zero_stock':
             products = products.filter(quantity=0)
@@ -29,8 +29,7 @@ def product_list(request):
                 products = products.filter(category_id=category_id)
             except ValueError:
                 pass
-
-    # Category selection logic
+ 
     category_selected = ''
     if category_id == 'low_stock':
         category_selected = 'Low Stock Items'
