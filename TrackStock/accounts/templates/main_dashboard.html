@@ -198,64 +198,146 @@
         </div>
     </div>
 {% endif %}
-    <!-- Charts Section -->
-    <div class="row g-4"></div>
-        <div class="col-lg-8">
-            <div class="chart-container">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h5 class="card-title">Sales Analytics</h5>
-                    <div class="chart-actions">
-                        <button class="btn btn-outline-secondary btn-sm">Export</button>
-                    </div>
-                </div>
-                <canvas id="salesChart" height="300"></canvas>
-            </div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="chart-container">
+            <h6 class="card-title mb-3 text-center">Category Distribution</h6>
+            <canvas id="categoryChart" height="200"></canvas>
         </div>
-        <div class="col-lg-4">
-            <div class="chart-container">
-                <h5 class="card-title mb-4">Top Products</h5>
-                <canvas id="productsChart" height="300"></canvas>
-            </div>
+    </div>
+    <div class="col-md-4">
+        <div class="chart-container">
+            <h6 class="card-title mb-3 text-center">Supermarket Distribution</h6>
+            <canvas id="supermarketChart" height="200"></canvas>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="chart-container">
+            <h6 class="card-title mb-3 text-center">Employee Distribution</h6>
+            <canvas id="employeeChart" height="200"></canvas>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="chart-container">
+            <h6 class="card-title mb-3 text-center">Orders Overview</h6>
+            <canvas id="ordersChart" height="200"></canvas>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="chart-container">
+            <h6 class="card-title mb-3 text-center">Shipments Overview</h6>
+            <canvas id="shipmentsChart" height="200"></canvas>
+        </div>
+    </div>
         </div>
     </div>
 </div>
-
 <script>
-    // Initialize charts
     document.addEventListener('DOMContentLoaded', function() {
-        // Sales Analytics Chart
-        const salesChart = new Chart(document.getElementById('salesChart'), {
-            type: 'line',
+        var categoryData = JSON.parse('{{ category_data|safe }}');
+
+        new Chart(document.getElementById('categoryChart'), {
+            type: 'pie',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                labels: Object.keys(categoryData),
                 datasets: [{
-                    label: 'Sales',
-                    data: [65, 59, 80, 81, 56, 55],
-                    borderColor: '#6571ff',
-                    tension: 0.3
+                    data: Object.values(categoryData),
+                    backgroundColor: [
+                        '#6571ff', '#05a34a', '#fbbc06', '#ff3366', '#66d1d1'
+                    ]
                 }]
+            }
+        });
+
+        new Chart(document.getElementById('supermarketChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Supermarket A', 'Supermarket B', 'Supermarket C'],
+                datasets: [
+                    {
+                        label: '2022',
+                        data: [30, 50, 20],
+                        backgroundColor: ['#6571ff', '#05a34a', '#fbbc06']
+                    },
+                    {
+                        label: '2023',
+                        data: [40, 30, 30],
+                        backgroundColor: ['#7987a1', '#66d1d1', '#ff3366']
+                    }
+                ]
             },
             options: {
                 responsive: true,
                 plugins: {
-                    legend: {
-                        position: 'top',
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ${context.raw}%`;
+                            }
+                        }
                     }
                 }
             }
         });
 
-        // Top Products Chart
-        const productsChart = new Chart(document.getElementById('productsChart'), {
-            type: 'doughnut',
+        new Chart(document.getElementById('employeeChart'), {
+            type: 'scatter',
             data: {
-                labels: ['Product A', 'Product B', 'Product C'],
                 datasets: [{
-                    data: [300, 200, 100],
-                    backgroundColor: ['#6571ff', '#05a34a', '#fbbc06']
+                    label: 'Employee Distribution',
+                    data: [
+                        { x: 10, y: 20 },
+                        { x: 15, y: 10 },
+                        { x: 20, y: 30 },
+                        { x: 25, y: 25 }
+                    ],
+                    backgroundColor: '#05a34a'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: { title: { display: true, text: 'X Axis' } },
+                    y: { title: { display: true, text: 'Y Axis' } }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('ordersChart'), {
+            type: 'line',
+            data: {
+                labels: ['January', 'February', 'March', 'April'],
+                datasets: [{
+                    label: 'Total Orders',
+                    data: [10, 20, 15, 25],
+                    borderColor: '#fbbc06',
+                    tension: 0.3
                 }]
             }
         });
+
+        new Chart(document.getElementById('shipmentsChart'), {
+            type: 'bar',
+            data: {
+                labels: ['January', 'February', 'March', 'April'],
+                datasets: [{
+                    label: 'Total Shipments',
+                    data: [5, 15, 10, 20],
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+
     });
 </script>
+
 {% endblock main_content %}
