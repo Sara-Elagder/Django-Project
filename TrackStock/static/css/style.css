@@ -307,17 +307,18 @@ body {
   margin-right: 15px;
 }
 .card-img-container {
-    height: 200px;
+    height: 400px;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: #f8f9fa;
 }
-.card-img-top {
+.card-img-top{
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit:cover;
+
 }
 /* end of cards styling */
 /* pagination styling */ 
