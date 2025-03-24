@@ -31,7 +31,7 @@ class RegisterView(UserPassesTestMixin, CreateView):
 class LoginView(FormView):
     template_name = 'forms/login_form.html'  
     form_class = AuthenticationForm
-    success_url = reverse_lazy('inventory:product_list')  
+    success_url = reverse_lazy('accounts:dashboard')  
 
     @method_decorator(never_cache)  
     def dispatch(self, request, *args, **kwargs):
